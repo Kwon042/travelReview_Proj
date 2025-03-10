@@ -51,10 +51,6 @@ public class ReviewBoardController {
         return "Boards/write";
     }
 
-
-
-
-
     @GetMapping("/reviewBoard")
     public String showReviewBoard(@RequestParam(name = "region", required = false) String region, Model model) {
         if (region == null || region.isEmpty()) {

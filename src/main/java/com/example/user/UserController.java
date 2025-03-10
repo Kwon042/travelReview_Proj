@@ -5,10 +5,16 @@ import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
+
+import java.io.IOException;
 
 @RequiredArgsConstructor
 @Controller
@@ -46,13 +52,57 @@ public class UserController {
             bindingResult.reject("signupFailed", e.getMessage());
             return "signup_form";
         }
-
         return "redirect:/";
     }
 
     @GetMapping("/login")
     public String login() {
         return "/user/login_form";
+    }
+
+    @GetMapping("/mypage")
+    public String getMypage(Model model) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if (authentication == null || !authentication.isAuthenticated()) {
+            return "redirect:/user/login";
+        }
+        SiteUser user = (SiteUser) authentication.getPrincipal();
+        model.addAttribute("user", user);
+
+        return "user/mypage";
+    }
+
+    @PostMapping("/updateNickname")
+    public ResponseEntity<String> updateNickname(@RequestParam Long userId, @RequestParam String nickname) {
+        userService.updateNickname(userId, nickname);
+        return ResponseEntity.ok("닉네임이 성공적으로 수정되었습니다.");
+    }
+
+    @PostMapping("/uploadProfileImage")
+    public ResponseEntity<String> uploadProfileImage(@RequestParam Long userId, @RequestParam MultipartFile profileImage) {
+        try {
+            userService.uploadProfileImage(userId, profileImage);
+            return ResponseEntity.ok("프로필 이미지가 성공적으로 업로드되었습니다.");
+        } catch (IOException e) {
+            return ResponseEntity.status(500).body("이미지 업로드 중 오류가 발생했습니다.");
+        }
+    }
+
+    @DeleteMapping("/deleteAccount")
+    public ResponseEntity<String> deleteAccount(@RequestParam Long userId) {
+        userService.deleteUser(userId);
+        return ResponseEntity.ok("회원 탈퇴가 완료되었습니다.");
+    }
+
+    // 사용자 정보를 반환하는 메서드 (예: 닉네임, 프로필 이미지 URL 등)
+    @GetMapping("/userInfo/{userId}")
+    public ResponseEntity<SiteUser> getUserInfo(@PathVariable Long userId) {
+        SiteUser user = userService.getUserById(userId);
+        if (user != null) {
+            return ResponseEntity.ok(user);
+        } else {
+            return ResponseEntity.notFound().build();
+        }
     }
 
 }

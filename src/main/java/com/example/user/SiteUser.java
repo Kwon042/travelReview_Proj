@@ -29,4 +29,5 @@ public class SiteUser {
     @Column(nullable = false, unique = true)
     private String nickname;
 
+    private String profileImageUrl;
 }
