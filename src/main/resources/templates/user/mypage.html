@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>마이페이지</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="/header.css">
+    <link rel="stylesheet" href="/footer.css">
+</head>
+<body>
+<div class="container">
+    <header th:replace="~{layout/header :: navbarFragment}"></header>
+
+    <h2>내 정보</h2>
+
+    <!-- 사용자 상세 정보 표시 -->
+    <div class="mb-4">
+        <h4>사용자 상세 정보</h4>
+        <p><strong>사용자 이름:</strong> <span th:text="${user.username}"></span></p>
+        <p><strong>닉네임:</strong> <span th:text="${user.nickname}"></span></p>
+        <p><strong>이메일:</strong> <span th:text="${user.email}"></span></p>
+        <p>
+            <strong>프로필 이미지:</strong>
+            <img th:src="${user.profileImageUrl}" alt="Profile Image" style="width: 100px; height: auto;" />
+        </p>
+    </div>
+
+    <!-- 비밀번호 수정 폼 -->
+    <form id="passwordForm" method="post" action="/user/updatePassword">
+        <div class="mb-3">
+            <label for="currentPassword" class="form-label">현재 비밀번호:</label>
+            <input type="password" id="currentPassword" name="currentPassword" required class="form-control">
+        </div>
+        <div class="mb-3">
+            <label for="newPassword" class="form-label">새 비밀번호:</label>
+            <input type="password" id="newPassword" name="newPassword" required class="form-control">
+        </div>
+        <div class="mb-3">
+            <label for="confirmNewPassword" class="form-label">새 비밀번호 확인:</label>
+            <input type="password" id="confirmNewPassword" name="confirmNewPassword" required class="form-control">
+        </div>
+        <button type="submit" class="btn btn-primary">비밀번호 수정하기</button>
+    </form>
+
+    <!-- 닉네임 수정 폼 -->
+    <form id="nicknameForm" method="post" action="/user/updateNickname">
+        <div class="mb-3">
+            <label for="nickname" class="form-label">닉네임 수정:</label>
+            <input type="text" id="nickname" name="nickname" required th:value="${user.nickname}" class="form-control">
+        </div>
+        <button type="submit" class="btn btn-secondary">수정하기</button>
+    </form>
+
+    <!-- 프로필 이미지 업로드 폼 -->
+    <form id="profileImageForm" method="post" action="/user/uploadProfileImage" enctype="multipart/form-data">
+        <div class="mb-3">
+            <label for="profileImage" class="form-label">프로필 이미지 업로드:</label>
+            <input type="file" id="profileImage" name="profileImage" accept="image/*" required class="form-control">
+        </div>
+        <button type="submit" class="btn btn-success">업로드</button>
+    </form>
+
+    <button id="deleteAccountButton" class="btn btn-danger">회원 탈퇴</button>
+
+    <h3>찜한 여행지 목록</h3>
+    <ul id="favouritePlaces">
+        <li>여행지 1</li>
+        <li>여행지 2</li>
+        <li>여행지 3</li>
+    </ul>
+    <footer th:replace="~{layout/footer}"></footer>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+<script>
+    document.getElementById("deleteAccountButton").addEventListener("click", function() {
+        if (confirm("정말로 회원 탈퇴를 하시겠습니까?")) {
+            // 회원 탈퇴 요청 보내기
+            fetch("/user/deleteAccount", {
+                method: "DELETE"
+            }).then(response => {
+                if (response.ok) {
+                    alert("회원 탈퇴가 완료되었습니다.");
+                    window.location.href = "/";
+                } else {
+                    alert("탈퇴에 실패했습니다.");
+                }
+            });
+        }
+    });
+</script>
+</body>
+</html>
