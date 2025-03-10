@@ -1,0 +1,63 @@
+/* 📌 헤더 스타일 */
+header {
+    background-color: #5b30a4; /* 보라색 배경 */
+    color: white;
+    padding: 10px;
+}
+
+/* 📌 중앙 정렬을 위한 스타일 */
+.header-container {
+    display: flex;
+    justify-content: space-between; /* 왼쪽과 오른쪽으로 분할 */
+    align-items: center; /* 수직 중앙 정렬 */
+    width: 100%;
+    position: relative; /* 위치 조정 */
+}
+
+/* 중앙 브랜드 스타일 */
+.navbar-brand {
+    position: absolute; /* 절대 위치 설정 */
+    left: 50%; /* 왼쪽 기준으로 50% */
+    transform: translateX(-50%); /* 중앙으로 이동 */
+    color: white !important;
+    font-weight: bold;
+    font-size: 2.5rem; /* 제목 크기 조정 */
+}
+
+/* 좌측 메뉴를 왼쪽으로 붙이기 */
+.left-nav {
+    display: flex;
+}
+
+/* 우측 메뉴를 오른쪽으로 붙이기 */
+.right-nav {
+    display: flex;
+}
+
+/* 나머지 스타일은 그대로 유지 */
+.navbar-toggler {
+    background-color: transparent !important;
+}
+
+.navbar-toggler-icon {
+    filter: invert(1); /* 햄버거 메뉴 색상 반전 */
+}
+
+.nav-link {
+    color: white !important; /* 링크 색상 */
+    margin-right: 10px; /* 링크 사이 간격 */
+}
+
+.nav-link:hover {
+    color: #ffd700 !important; /* 마우스 오버 시 금색 */
+}
+
+/* 드롭다운 메뉴 스타일 */
+.dropdown-menu {
+    background-color: #f9f9f9; /* 드롭다운 배경 */
+    border-radius: 5px;
+}
+
+.dropdown-menu .dropdown-item:hover {
+    background-color: #ddd;
+}

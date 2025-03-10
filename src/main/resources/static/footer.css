@@ -1,0 +1,22 @@
+html, body {
+    height: 100%;
+    margin: 0;
+}
+
+/* 📌 전체 컨테이너 */
+.wrap-container {
+    position: relative; /* 푸터의 절대 위치를 위한 기준 설정 */
+    min-height: 100vh; /* 화면 최소 높이 설정 */
+}
+
+/* 📌 푸터 스타일 */
+footer {
+    position: absolute; /* 절대 위치 설정 */
+    bottom: 0; /* 화면 하단에 위치 */
+    left: 0; /* 왼쪽 정렬 */
+    right: 0; /* 오른쪽 정렬 */
+    background-color: #5b30a4; /* 푸터 배경색 */
+    color: white; /* 텍스트 색상 */
+    text-align: center; /* 텍스트 중앙 정렬 */
+    padding: 10px 0; /* 푸터 안쪽 여백 */
+}

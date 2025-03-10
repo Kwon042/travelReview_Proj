@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" xmlns:th="http://www.thymeleaf.org" layout:decorate="~{test/testbase}">
+<head>
+    <meta charset="UTF-8">
+    <title>Main Page</title>
+    <link rel="stylesheet" href="/static/test.css"> <!-- static 폴더 내의 CSS 경로 수정 -->
+</head>
+<body>
+<th:block layout:fragment="content">
+    <!-- 여기서 content 영역을 정의 -->
+    <div id="board-content">
+        <h1>Welcome to the main page!</h1>
+        <p>이곳은 메인 페이지입니다.</p>
+    </div>
+</th:block>
+</body>
+</html>

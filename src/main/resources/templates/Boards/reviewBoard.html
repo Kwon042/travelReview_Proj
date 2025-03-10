@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="ko"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>게시판</title>
+    <link rel="stylesheet" href="/header.css">
+    <link rel="stylesheet" href="/baseBoard.css">
+    <link rel="stylesheet" href="/footer.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+</head>
+<body>
+
+<!-- 네비게이션바 -->
+<header th:replace="~{layout/header :: navbarFragment}"></header>
+
+<div class="container mt-4">
+    <div class="row">
+        <!-- 왼쪽 사이드바 -->
+        <aside class="col-md-3">
+            <!-- 검색 기능과 여행 종류 선택 -->
+            <div class="search-section">
+                <input type="text" class="search-bar" placeholder="검색" />
+                <select id="travel-type" class="form-select" aria-label="여행 종류 선택">
+                    <option value="여행사">여행사</option>
+                    <option value="자유여행">자유여행</option>
+                </select>
+            </div>
+
+            <!-- 게시판 목록 -->
+            <div class="board-list">
+                <h3>게시판</h3>
+                <div class="divider"></div> <!-- 구분선 -->
+                <ul>
+                    <li><a href="/Boards/notice">공지사항</a></li>
+                    <li><a href="/Boards/reviewBoard">리뷰게시판</a></li>
+                    <li><a href="/Boards/freeBoard">자유게시판</a></li>
+                </ul>
+            </div>
+        </aside>
+
+        <!-- 게시판 내용 -->
+        <main class="col-md-9">
+            <!-- 게시판 제목 -->
+            <h2 id="region-title">게시판</h2>
+            <div class="divider"></div>
+            <hr style="border: 1px solid #5b30a4; margin: 20px 0;"> <!-- 구분선 추가 -->
+
+            <!-- 게시판 내용 테이블 -->
+            <div id="board-content">
+                <table>
+                    <thead>
+                    <tr>
+                        <th>제목</th>
+                        <th>작성자</th>
+                        <th>조회수</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <!-- Thymeleaf를 사용하여 서버에서 넘긴 게시판 내용 출력 -->
+                    <tr th:each="board : ${boards}">
+                        <td><a th:href="@{/Boards/detail/{id}(id=${board.id})}" th:text="${board.title}"></a></td>
+                        <td th:text="${board.nickname}"></td>
+                        <td th:text="${board.hit}"></td>
+                    </tr>
+                    </tbody>
+                </table>
+                <a th:href="@{/Boards/write}" class="btn btn-success write-button">글쓰기</a>
+            </div>
+        </main>
+    </div>
+</div>
+
+<!-- 풋터 추가 -->
+<footer th:replace="~{layout/footer}"></footer>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+
+<script>
+    // URL에서 쿼리 파라미터를 읽어 지역을 추출
+    const urlParams = new URLSearchParams(window.location.search);
+    const region = urlParams.get('region') || "전체"; // 기본값 설정
+
+    // 게시판 제목을 지역에 맞게 변경
+    document.getElementById('region-title').textContent = `${region} 게시판`;
+</script>
+
+</body>
+</html>

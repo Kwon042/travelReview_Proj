@@ -1,0 +1,138 @@
+/* 게시판 전체 레이아웃 */
+.container {
+    margin-top: 20px;
+}
+
+/* 사이드바 스타일 */
+aside {
+    background-color: #f4f4f4;
+    padding: 15px;
+    border-radius: 8px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1); /* 그림자 효과 추가 */
+}
+
+/* 검색 기능 */
+.search-section {
+    margin-bottom: 20px;
+}
+
+.search-bar {
+    width: 100%;
+    padding: 10px; /* 패딩 증가 */
+    margin-bottom: 10px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    transition: border-color 0.3s; /* 부드러운 변화 추가 */
+}
+
+.search-bar:focus {
+    border-color: #007bff; /* 포커스 시 경계선 색상 변경 */
+    outline: none; /* 기본 아웃라인 제거 */
+}
+
+.form-select {
+    width: 100%;
+    padding: 10px; /* 패딩 증가 */
+    border: 1px solid #ccc;
+    border-radius: 4px;
+}
+
+/* 게시판 목록 스타일 */
+.board-list h3 {
+    font-size: 1.5em; /* 제목 크기 증가 */
+    font-weight: bold;
+    margin-bottom: 10px;
+    color: #333; /* 텍스트 색상 조정 */
+}
+
+.board-list .divider {
+    height: 1px;
+    background-color: #ccc;
+    margin: 10px 0;
+}
+
+.board-list ul {
+    list-style-type: none;
+    padding: 0;
+}
+
+.board-list ul li {
+    margin: 8px 0;
+}
+
+.board-list ul li a {
+    text-decoration: none;
+    color: #007bff;
+    font-weight: bold;
+    transition: color 0.3s; /* 부드러운 변화 추가 */
+}
+
+.board-list ul li a:hover {
+    color: #0056b3;
+}
+
+/* 게시판 메인 콘텐츠 */
+main {
+    background-color: #fff;
+    padding: 20px; /* 패딩 증가 */
+    border-radius: 8px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1); /* 그림자 효과 증가 */
+}
+
+/* 게시판 제목 */
+#region-title {
+    font-size: 1.8em; /* 제목 크기 증가 */
+    font-weight: bold;
+    margin-bottom: 10px;
+    color: #333; /* 텍스트 색상 조정 */
+}
+
+/* 게시판 테이블 스타일 */
+#board-content table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 10px;
+}
+
+#board-content th, #board-content td {
+    border: 1px solid #ddd;
+    padding: 12px;
+    text-align: center;
+}
+
+#board-content th {
+    background-color: #f0f0f0;
+    font-weight: bold;
+    color: #333; /* 헤더 텍스트 색상 조정 */
+}
+
+#board-content tr:nth-child(even) {
+    background-color: #f9f9f9;
+}
+
+#board-content tr:hover {
+    background-color: #f1f1f1; /* 마우스 오버 시 배경색 */
+}
+
+/* 반응형 스타일 */
+@media (max-width: 768px) {
+    .row {
+        flex-direction: column;
+    }
+
+    aside {
+        width: 100%;
+        margin-bottom: 20px;
+    }
+
+    main {
+        width: 100%;
+    }
+}
+
+/* 글쓰기 버튼 스타일 */
+.write-button {
+    position: relative; /* 테이블 내에서 위치 */
+    float: right; /* 오른쪽 정렬 */
+    margin-top: 15px; /* 테이블과 버튼 사이의 여백 */
+}

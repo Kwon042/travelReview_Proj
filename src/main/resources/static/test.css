@@ -1,0 +1,49 @@
+/* 기본 스타일 */
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f4f4f4;
+    margin: 0;
+    padding: 0;
+}
+
+h1 {
+    color: #333;
+}
+
+.container {
+    width: 80%;
+    margin: 0 auto;
+    padding-top: 20px;
+}
+
+footer {
+    text-align: center;
+    padding: 10px;
+    background-color: #333;
+    color: white;
+}
+
+header {
+    background-color: #0066cc;
+    padding: 20px;
+    color: white;
+    text-align: center;
+}
+
+#board-content {
+    background-color: white;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+/* 반응형 디자인 추가 */
+@media (max-width: 768px) {
+    .container {
+        width: 90%;
+    }
+
+    header {
+        font-size: 18px;
+    }
+}

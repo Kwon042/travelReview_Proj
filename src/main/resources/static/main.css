@@ -1,0 +1,100 @@
+/* 📌 기본 스타일 */
+body {
+    font-family: Arial, sans-serif; /* 기본 폰트 설정 */
+    margin: 0; /* 기본 마진 제거 */
+    padding: 0; /* 기본 패딩 제거 */
+    background-color: #f9f9f9; /* 배경색 설정 */
+}
+
+/* 📌 메뉴 스타일 */
+.menu {
+    position: relative; /* 메뉴 위치 설정 */
+    display: inline-block; /* 수평 정렬 */
+}
+
+.menu-content {
+    display: none; /* 기본적으로 숨김 */
+    position: absolute; /* 절대 위치 지정 */
+    background-color: white; /* 배경색 흰색 */
+    min-width: 150px; /* 최소 너비 설정 */
+    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2); /* 그림자 효과 */
+    z-index: 1; /* 메뉴가 다른 요소 위에 나타나도록 설정 */
+}
+
+.menu-content a {
+    color: black; /* 링크 색상 검정 */
+    padding: 10px; /* 안쪽 여백 */
+    text-decoration: none; /* 기본 밑줄 제거 */
+    display: block; /* 블록 요소로 설정 */
+}
+
+.menu:hover .menu-content {
+    display: block; /* 마우스 오버 시 보기 */
+}
+
+/* 📌 타이틀 스타일 */
+.title {
+    text-align: center; /* 중앙 정렬 */
+    margin-top: 20px; /* 상단 여백 설정 */
+    font-size: 2rem; /* 제목 크기 설정 */
+    color: #333; /* 제목 색상 설정 */
+}
+
+/* 📌 여행 테이블 스타일 */
+.travel-table {
+    width: 80%; /* 테이블 너비 80% */
+    margin: 20px auto; /* 중앙 정렬 및 여백 설정 */
+    border-collapse: collapse; /* 경계선 병합 */
+}
+
+/* Bootstrap 스타일로 변경 */
+.travel-table th {
+    border: 1px solid #ddd; /* 경계선 설정 */
+    padding: 10px; /* 안쪽 여백 설정 */
+    background-color: #f4f4f4; /* 헤더 배경색 설정 */
+}
+
+.travel-table th a {
+    text-decoration: none; /* 기본 밑줄 제거 */
+    color: black; /* 텍스트 색상 검정 */
+}
+
+.travel-table th a:hover {
+    color: blue; /* 마우스 오버 시 색상 변경 */
+}
+
+/* 📌 Top 3 섹션 스타일 */
+.top3-section {
+    width: 80%; /* 섹션 너비 설정 */
+    margin: 20px auto; /* 중앙 정렬 및 여백 */
+    background: white; /* 배경색 흰색 */
+    padding: 15px; /* 안쪽 여백 설정 */
+    border-radius: 8px; /* 모서리 둥글게 설정 */
+    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1); /* 그림자 효과 */
+}
+
+.top3-section h3 {
+    border-bottom: 2px solid #ddd; /* 제목 아래 경계선 */
+    padding-bottom: 5px; /* 아래 여백 설정 */
+    font-size: 1.5rem; /* 제목 크기 설정 */
+    color: #333; /* 제목 색상 설정 */
+}
+
+.top3-section ul {
+    list-style-type: none; /* 목록 스타일 없앰 */
+    padding: 0; /* 패딩 제거 */
+}
+
+.top3-section ul li {
+    padding: 8px 0; /* 각 항목 여백 설정 */
+    border-bottom: 1px solid #eee; /* 항목 아래 경계선 */
+    transition: background-color 0.3s; /* 배경색 변화에 부드러운 전환 추가 */
+}
+
+.top3-section ul li:hover {
+    background-color: #f1f1f1; /* 마우스 오버 시 배경색 변경 */
+}
+
+.top3-section ul li:last-child {
+    border-bottom: none; /* 마지막 항목 경계선 제거 */
+}

@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="en"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Base Layout</title>
+    <link rel="stylesheet" href="/test.css"> <!-- CSS 파일 경로 수정 -->
+</head>
+<body>
+<!--<header th:replace="~{navbar}"></header>-->
+
+<main class="container mx-auto p-4 min-h-screen">
+    <th:block layout:fragment="content"></th:block> <!-- 이곳에 하위 템플릿의 콘텐츠가 들어갑니다 -->
+</main>
+
+<!--<footer th:replace="~{footer}"></footer>--> <!-- 푸터 -->
+</body>
+</html>
