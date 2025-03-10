@@ -29,10 +29,6 @@ public class ReviewBoardService {
     void saveToAllBoards(String title, String content, String region, String nickname) {
         Optional<ReviewBoard> existingPost = reviewBoardRepository.findByRegionAndTitle("전체", title);
 
-        if (existingPost.isPresent()) {
-            System.out.println("Post already exists in '전체' board: " + title);
-            return;
-        }
         ReviewBoard allBoardPost = new ReviewBoard();
         allBoardPost.setTitle(title);
         allBoardPost.setContent(content);
@@ -43,7 +39,6 @@ public class ReviewBoardService {
         allBoardPost.setCreatedAt(LocalDateTime.now());
         allBoardPost.setUpdatedAt(LocalDateTime.now());
 
-        // 전체 게시판에 저장
         this.reviewBoardRepository.save(allBoardPost);
     }
 
@@ -58,7 +53,6 @@ public class ReviewBoardService {
         regionalPost.setCreatedAt(LocalDateTime.now());
         regionalPost.setUpdatedAt(LocalDateTime.now());
 
-        // 지역 게시판에 저장
         this.reviewBoardRepository.save(regionalPost);
     }
 

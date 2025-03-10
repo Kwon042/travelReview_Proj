@@ -20,7 +20,7 @@
   <form th:action="@{/Boards/save}" method="post" accept-charset="UTF-8">
     <input type="hidden" name="_csrf" th:value="${_csrf.token}"/>
 
-    <div class="mb-3" th:if="${boardType == 'reviewBoard'}">
+    <div class="mb-3" th:if="${showRegionSelect}">
       <label for="region" class="form-label">지역</label>
       <select class="form-control" id="region" name="region" required>
         <option value="" disabled selected>지역 선택</option>
@@ -43,7 +43,7 @@
         <option value="제주">제주</option>
       </select>
     </div>
-    <input type="hidden" name="region" th:value="${region}" th:unless="${region == null}"/>
+<!--    <input type="hidden" name="region" th:value="${region}" th:unless="${region == null}"/>-->
     <input type="hidden" name="nickname" th:value="${#authentication.name}"/>
     <div class="mb-3">
       <label for="title" class="form-label">제목</label>
