@@ -17,51 +17,42 @@ body {
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 }
 
-/* 헤더 */
-header {
-    background-color: #4CAF50;
-    padding: 15px;
-    color: white;
-    text-align: center;
-    border-radius: 8px 8px 0 0;
-}
-
-/* 사용자 정보 */
+/* 사용자 정보 제목 */
 h2 {
     font-size: 28px;
     margin-bottom: 20px;
-    color: #333;
+    text-align: left;
 }
 
-h4 {
-    font-size: 24px;
-    margin-bottom: 10px;
-    color: #333;
-    text-align: center;
+/* 정보 테이블 스타일 */
+.info-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 20px; /* 아래 여백 추가 */
 }
 
-p {
-    font-size: 16px;
-    margin: 5px 0;
+.info-table td {
+    padding: 10px;
+    border-bottom: 1px solid #ddd;
+    vertical-align: middle; /* 수직 정렬 */
 }
 
-strong {
-    font-weight: bold;
+.profile-image {
+    width: 100px;
+    height: 100px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 3px solid #ddd;
 }
 
-#changePasswordBtn {
-    margin-top: 20px;
-    padding: 10px 15px;
-    background-color: #007bff;
-    color: white;
-    border: none;
+.action-button {
+    color: black;
     cursor: pointer;
-    font-size: 16px;
-    border-radius: 5px;
+    font-size: 18px;
 }
 
-#changePasswordBtn:hover {
-    background-color: #0056b3;
+.action-button:hover {
+    text-decoration: underline;
 }
 
 /* 비밀번호 수정 폼 */
@@ -102,43 +93,6 @@ strong {
     background-color: #218838;
 }
 
-/* 프로필 이미지 업로드 폼 */
-#profileImageForm {
-    margin-top: 30px;
-    padding: 20px;
-    border: 1px solid #ddd;
-    border-radius: 8px;
-    background-color: #f9f9f9;
-}
-
-#profileImageForm .form-label {
-    font-size: 16px;
-    margin-bottom: 10px;
-}
-
-#profileImageForm .form-control {
-    width: 100%;
-    padding: 10px;
-    border: 1px solid #ccc;
-    border-radius: 5px;
-    font-size: 16px;
-}
-
-#profileImageForm .btn {
-    margin-top: 15px;
-    padding: 10px 15px;
-    background-color: #007bff;
-    color: white;
-    border: none;
-    cursor: pointer;
-    font-size: 16px;
-    border-radius: 5px;
-}
-
-#profileImageForm .btn:hover {
-    background-color: #0056b3;
-}
-
 /* 찜한 여행지 목록 */
 h3 {
     font-size: 24px;
@@ -147,61 +101,10 @@ h3 {
     color: #333;
 }
 
+/* 찜한 여행지 목록 스타일 */
 #favouritePlaces {
     list-style-type: none;
     padding: 0;
-}
-
-/* 사용자 정보 섹션 */
-.mb-4 {
-    margin-bottom: 40px; /* 아래 여백 증가 */
-}
-
-/* 프로필 이미지 및 수정 버튼 컨테이너 */
-#profileImageBlock {
-    display: flex;
-    align-items: center; /* 수직 중앙 정렬 */
-    justify-content: center; /* 수평 중앙 정렬 */
-    gap: 15px;
-    margin-bottom: 20px;
-}
-
-/* 프로필 이미지 */
-#profileImageBlock img {
-    width: 120px;
-    height: 120px;
-    border-radius: 50%;
-    border: 3px solid #ddd;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    object-fit: cover;
-}
-
-/* 수정 버튼 */
-#editProfileImageBtn {
-    padding: 10px 20px;
-    background-color: #007bff;
-    color: white;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-}
-
-#editProfileImageBtn:hover {
-    background-color: #0056b3;
-}
-
-/* 사용자 정보 블록 */
-#userInfoBlock {
-    background-color: #fff;
-    padding: 25px;
-    border-radius: 12px;
-    box-shadow: 0 6px 18px rgba(0, 0, 0, 0.1);
-    border: 1px solid #ddd;
-}
-
-#userInfoBlock p {
-    font-size: 18px;
-    margin-bottom: 10px;
 }
 
 /* 프로필 이미지 수정 폼 */
@@ -214,53 +117,33 @@ h3 {
     background-color: #f9f9f9;
 }
 
-#profileImageForm .form-label {
-    font-size: 16px;
-    margin-bottom: 10px;
-}
-
-#profileImageForm .form-control {
-    width: 100%;
-    padding: 10px;
-    border: 1px solid #ccc;
-    border-radius: 5px;
-    font-size: 16px;
-}
-
-#profileImageForm .btn {
-    margin-top: 15px;
+/* 버튼 스타일 */
+.btn {
     padding: 10px 15px;
-    background-color: #007bff;
+    font-size: 16px;
+    border-radius: 5px;
+    cursor: pointer;
+    margin-top: 10px;
+}
+
+.btn-danger {
+    background-color: #dc3545;
     color: white;
     border: none;
-    cursor: pointer;
-    font-size: 16px;
-    border-radius: 5px;
+    margin-top: 20px;
 }
 
-#profileImageForm .btn:hover {
-    background-color: #0056b3;
+.btn-danger:hover {
+    background-color: #c82333;
 }
 
-/* 반응형 디자인 (모바일 화면) */
-@media (max-width: 768px) {
-    #profileImageBlock {
-        flex-direction: column;
-        align-items: center;
-    }
-
-    #profileImageBlock img {
-        margin-bottom: 15px;
-    }
-
-    #userInfoBlock {
-        padding: 20px;
-    }
+.text-end {
+    text-align: end;
 }
 
 /* 모달 스타일 */
 .modal {
-    display: none; /* 초기 상태에서 모달을 숨깁니다 */
+    display: none; /* 초기 상태에서 숨김 */
     position: fixed;
     z-index: 1;
     left: 0;
@@ -295,33 +178,4 @@ h3 {
     color: black;
     text-decoration: none;
     cursor: pointer;
-}
-
-/* 버튼 스타일 */
-.btn {
-    padding: 10px 15px;
-    font-size: 16px;
-    border-radius: 5px;
-    cursor: pointer;
-    margin-top: 10px;
-}
-
-.btn-success {
-    background-color: #28a745;
-    color: white;
-    border: none;
-}
-
-.btn-danger {
-    background-color: #dc3545;
-    color: white;
-    border: none;
-}
-
-.btn-success:hover {
-    background-color: #218838;
-}
-
-.btn-danger:hover {
-    background-color: #c82333;
 }

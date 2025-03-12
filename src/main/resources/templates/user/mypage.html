@@ -9,44 +9,47 @@
     <link rel="stylesheet" href="/footer.css">
 </head>
 <body>
+<header th:replace="~{layout/header :: navbarFragment}"></header>
 <div class="container">
-    <header th:replace="~{layout/header :: navbarFragment}"></header>
+    <h2>기본 정보</h2>
+    <table class="info-table">
+        <tr>
+            <td><strong>프로필 사진</strong></td>
+            <td></td>
+            <td class="text-end">
+                <img th:src="${user.profileImageUrl}" alt="Profile Image" class="profile-image" onclick="openProfileImageModal()">
+            </td>
+        </tr>
+        <tr>
+            <td><strong>사용자 이름</strong></td>
+            <td><span th:text="${user.username}"></span></td>
+            <td></td>
+        </tr>
+        <tr>
+            <td><strong>닉네임</strong></td>
+            <td><span th:text="${user.nickname}"></span></td>
+            <td class="text-end"><span class="action-button" onclick="openEditModal('nickname')">></span></td>
+        </tr>
+        <tr>
+            <td><strong>이메일</strong></td>
+            <td><span th:text="${user.email}"></span></td>
+            <td class="text-end"><span class="action-button" onclick="openEditModal('email')">></span></td>
+        </tr>
+        <tr>
+            <td><strong>비밀번호</strong></td>
+            <td>**********</td>
+            <td class="text-end"><span class="action-button" onclick="togglePasswordForm()">></span></td>
+        </tr>
+    </table>
 
-    <h2>내 정보</h2>
-    <!-- 사용자 상세 정보 표시 -->
-    <div class="mb-4">
-        <h4>사용자 상세 정보</h4>
-        <div id="profileImageBlock">
-            <img th:src="${user.profileImageUrl}" alt="Profile Image" id="profileImage" onclick="openProfileImageModal()">
-        </div>
-        <!-- 프로필 이미지 업로드 및 삭제 팝업 -->
-        <div id="profileImageModal" class="modal">
-            <div class="modal-content">
-                <span class="close" onclick="closeProfileImageModal()">&times;</span>
-                <h4>프로필 이미지 변경 또는 삭제</h4>
-                <!-- 이미지 업로드 폼 -->
-                <form id="profileImageForm" method="post" action="/user/uploadProfileImage" enctype="multipart/form-data">
-                    <div class="mb-3">
-                        <label for="profileImage" class="form-label">변경</label>
-                        <input type="file" id="profileImageInput" name="file" accept="image/*" class="form-control">
-                    </div>
-                    <button type="submit" class="btn btn-success">변경</button>
-                </form>
-                <form id="deleteProfileImageForm" method="post" action="/user/deleteProfileImage">
-                    <button type="submit" class="btn btn-danger">삭제</button>
-                </form>
-            </div>
-        </div>
+    <h3>찜한 여행지 목록</h3>
+    <ul id="favouritePlaces">
+        <li>여행지 1</li>
+        <li>여행지 2</li>
+        <li>여행지 3</li>
+    </ul>
+    <button id="deleteAccountButton" class="btn btn-danger">회원 탈퇴</button>
 
-        <p><strong>사용자 이름:</strong> <span th:text="${user.username}"></span></p>
-        <p><strong>닉네임:</strong> <span th:text="${user.nickname}"></span></p>
-        <p><strong>이메일:</strong> <span th:text="${user.email}"></span></p>
-    </div>
-
-    <!-- 비밀번호 수정하기 버튼 -->
-    <button id="changePasswordBtn" onclick="togglePasswordForm()">비밀번호 수정하기</button>
-
-    <!-- 비밀번호 수정 폼 (숨겨져 있음) -->
     <div id="changePasswordForm" style="display: none;">
         <form action="/mypage/change_password" method="POST">
             <label for="currentPassword">현재 비밀번호</label>
@@ -61,19 +64,21 @@
             <button type="submit">비밀번호 변경</button>
         </form>
     </div>
+    <!-- 사용자 정보 수정 모달 -->
+    <div id="editModal" class="modal" style="display: none;">
+        <div class="modal-content">
+            <span class="close" onclick="closeEditModal()">&times;</span>
+            <h4>수정할 항목을 선택하세요.</h4>
+            <div class="modal-body">
+                <!-- 여기에 동적으로 내용 삽입되도록 설정 -->
+            </div>
+        </div>
+    </div>
 
-    <h3>찜한 여행지 목록</h3>
-    <ul id="favouritePlaces">
-        <li>여행지 1</li>
-        <li>여행지 2</li>
-        <li>여행지 3</li>
-    </ul>
-    <button id="deleteAccountButton" class="btn btn-danger">회원 탈퇴</button>
-    <footer th:replace="~{layout/footer}"></footer>
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-
 <script src="/static/mypage.js"></script>
 </body>
+<footer th:replace="~{layout/footer}"></footer>
 </html>
