@@ -1,0 +1,327 @@
+/* 기본적인 스타일 초기화 */
+body {
+    font-family: Arial, sans-serif;
+    line-height: 1.6;
+    margin: 0;
+    padding: 0;
+    background-color: #f4f4f4;
+}
+
+/* 컨테이너 */
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 20px;
+    background-color: #fff;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+/* 헤더 */
+header {
+    background-color: #4CAF50;
+    padding: 15px;
+    color: white;
+    text-align: center;
+    border-radius: 8px 8px 0 0;
+}
+
+/* 사용자 정보 */
+h2 {
+    font-size: 28px;
+    margin-bottom: 20px;
+    color: #333;
+}
+
+h4 {
+    font-size: 24px;
+    margin-bottom: 10px;
+    color: #333;
+    text-align: center;
+}
+
+p {
+    font-size: 16px;
+    margin: 5px 0;
+}
+
+strong {
+    font-weight: bold;
+}
+
+#changePasswordBtn {
+    margin-top: 20px;
+    padding: 10px 15px;
+    background-color: #007bff;
+    color: white;
+    border: none;
+    cursor: pointer;
+    font-size: 16px;
+    border-radius: 5px;
+}
+
+#changePasswordBtn:hover {
+    background-color: #0056b3;
+}
+
+/* 비밀번호 수정 폼 */
+#changePasswordForm {
+    margin-top: 20px;
+    padding: 20px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    background-color: #f9f9f9;
+}
+
+#changePasswordForm label {
+    font-size: 16px;
+    margin-bottom: 5px;
+    display: block;
+}
+
+#changePasswordForm input {
+    width: 100%;
+    padding: 10px;
+    margin-bottom: 15px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    font-size: 16px;
+}
+
+#changePasswordForm button {
+    padding: 10px 15px;
+    background-color: #28a745;
+    color: white;
+    border: none;
+    cursor: pointer;
+    font-size: 16px;
+    border-radius: 5px;
+}
+
+#changePasswordForm button:hover {
+    background-color: #218838;
+}
+
+/* 프로필 이미지 업로드 폼 */
+#profileImageForm {
+    margin-top: 30px;
+    padding: 20px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    background-color: #f9f9f9;
+}
+
+#profileImageForm .form-label {
+    font-size: 16px;
+    margin-bottom: 10px;
+}
+
+#profileImageForm .form-control {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    font-size: 16px;
+}
+
+#profileImageForm .btn {
+    margin-top: 15px;
+    padding: 10px 15px;
+    background-color: #007bff;
+    color: white;
+    border: none;
+    cursor: pointer;
+    font-size: 16px;
+    border-radius: 5px;
+}
+
+#profileImageForm .btn:hover {
+    background-color: #0056b3;
+}
+
+/* 찜한 여행지 목록 */
+h3 {
+    font-size: 24px;
+    margin-top: 40px;
+    margin-bottom: 20px;
+    color: #333;
+}
+
+#favouritePlaces {
+    list-style-type: none;
+    padding: 0;
+}
+
+/* 사용자 정보 섹션 */
+.mb-4 {
+    margin-bottom: 40px; /* 아래 여백 증가 */
+}
+
+/* 프로필 이미지 및 수정 버튼 컨테이너 */
+#profileImageBlock {
+    display: flex;
+    align-items: center; /* 수직 중앙 정렬 */
+    justify-content: center; /* 수평 중앙 정렬 */
+    gap: 15px;
+    margin-bottom: 20px;
+}
+
+/* 프로필 이미지 */
+#profileImageBlock img {
+    width: 120px;
+    height: 120px;
+    border-radius: 50%;
+    border: 3px solid #ddd;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    object-fit: cover;
+}
+
+/* 수정 버튼 */
+#editProfileImageBtn {
+    padding: 10px 20px;
+    background-color: #007bff;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+#editProfileImageBtn:hover {
+    background-color: #0056b3;
+}
+
+/* 사용자 정보 블록 */
+#userInfoBlock {
+    background-color: #fff;
+    padding: 25px;
+    border-radius: 12px;
+    box-shadow: 0 6px 18px rgba(0, 0, 0, 0.1);
+    border: 1px solid #ddd;
+}
+
+#userInfoBlock p {
+    font-size: 18px;
+    margin-bottom: 10px;
+}
+
+/* 프로필 이미지 수정 폼 */
+#profileImageFormBlock {
+    display: none; /* 초기에는 숨김 */
+    margin-top: 15px;
+    padding: 20px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    background-color: #f9f9f9;
+}
+
+#profileImageForm .form-label {
+    font-size: 16px;
+    margin-bottom: 10px;
+}
+
+#profileImageForm .form-control {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    font-size: 16px;
+}
+
+#profileImageForm .btn {
+    margin-top: 15px;
+    padding: 10px 15px;
+    background-color: #007bff;
+    color: white;
+    border: none;
+    cursor: pointer;
+    font-size: 16px;
+    border-radius: 5px;
+}
+
+#profileImageForm .btn:hover {
+    background-color: #0056b3;
+}
+
+/* 반응형 디자인 (모바일 화면) */
+@media (max-width: 768px) {
+    #profileImageBlock {
+        flex-direction: column;
+        align-items: center;
+    }
+
+    #profileImageBlock img {
+        margin-bottom: 15px;
+    }
+
+    #userInfoBlock {
+        padding: 20px;
+    }
+}
+
+/* 모달 스타일 */
+.modal {
+    display: none; /* 초기 상태에서 모달을 숨깁니다 */
+    position: fixed;
+    z-index: 1;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    justify-content: center;
+    align-items: center;
+}
+
+.modal-content {
+    background-color: #fff;
+    padding: 20px;
+    border-radius: 8px;
+    max-width: 500px;
+    margin: auto;
+    text-align: center;
+}
+
+.close {
+    color: #aaa;
+    font-size: 28px;
+    font-weight: bold;
+    position: absolute;
+    top: 10px;
+    right: 10px;
+}
+
+.close:hover,
+.close:focus {
+    color: black;
+    text-decoration: none;
+    cursor: pointer;
+}
+
+/* 버튼 스타일 */
+.btn {
+    padding: 10px 15px;
+    font-size: 16px;
+    border-radius: 5px;
+    cursor: pointer;
+    margin-top: 10px;
+}
+
+.btn-success {
+    background-color: #28a745;
+    color: white;
+    border: none;
+}
+
+.btn-danger {
+    background-color: #dc3545;
+    color: white;
+    border: none;
+}
+
+.btn-success:hover {
+    background-color: #218838;
+}
+
+.btn-danger:hover {
+    background-color: #c82333;
+}

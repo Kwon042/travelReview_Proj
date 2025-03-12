@@ -16,22 +16,22 @@ public class ReviewBoard {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id; // 번호
+    private Long id;
 
-    private String title; // 글제목
-    private String nickname; // 작성자 닉네임
-    private String content; // 내용
+    private String title;
+    private String nickname;
+    private String content;
 
-    private String region; // 지역 클릭
+    private String region;
 
     // 객체가 처음 저장할 때만 값을 설정하도록, 이후에는 수정하지 않기 위해 false
     @Column(name = "created_at",updatable = false)
-    private LocalDateTime createdAt; // 생성일시
+    private LocalDateTime createdAt;
 
     @Column(name = "updated_at")
-    private LocalDateTime updatedAt; // 수정일시
-    private Long hit; // 조회수
-    private Long voter; // 좋아요 수
+    private LocalDateTime updatedAt;
+    private Long hit;
+    private Long voter;
 
     // PrePersist 메소드 하나로 모든 초기화를 처리 (timestamp)
     @PrePersist

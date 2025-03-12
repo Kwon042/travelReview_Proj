@@ -53,7 +53,7 @@ public class UserService {
     }
 
     // 파일 업로드
-    public void uploadProfileImage(Long userId, MultipartFile file) throws IOException {
+    public String uploadProfileImage(Long userId, MultipartFile file) throws IOException {
         SiteUser user = userRepository.findById(userId).orElse(null);
         if (user != null) {
             // 파일 이름을 가져오기
@@ -72,7 +72,10 @@ public class UserService {
             String imageUrl = "/uploads/" + originalFilename;
             user.setProfileImageUrl(imageUrl);
             userRepository.save(user);
+
+            return imageUrl;
         }
+        return null;
     }
 
     public void deleteUser(Long userId) {
@@ -82,4 +85,14 @@ public class UserService {
     public SiteUser getUserById(Long userId) {
         return userRepository.findById(userId).orElse(null);
     }
+
+    public String encodePassword(String rawPassword) {
+        return passwordEncoder.encode(rawPassword);
+    }
+
+    public void updateUser(SiteUser user) {
+        userRepository.save(user);
+    }
+
+
 }

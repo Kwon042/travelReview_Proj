@@ -7,5 +7,6 @@ import java.util.Optional;
 
 public interface ReviewBoardRepository extends JpaRepository<ReviewBoard, Long> {
     List<ReviewBoard> findByRegion(String region);
+
     Optional<ReviewBoard> findByRegionAndTitle(String region, String title);
 }

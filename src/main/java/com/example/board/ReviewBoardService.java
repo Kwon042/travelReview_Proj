@@ -22,28 +22,34 @@ public class ReviewBoardService {
 
     @Transactional
     public void savePost(String title, String content, String region, String nickname) {
+        // 전체 게시판에 저장
         saveToAllBoards(title, content, region, nickname);
-        saveToRegionalBoard(title, content, region, nickname);
+        saveToRegionalBoard(title, content, region, nickname); 
     }
 
     void saveToAllBoards(String title, String content, String region, String nickname) {
+        // "전체" 게시판에 동일한 제목과 내용의 글이 있는지 확인
         Optional<ReviewBoard> existingPost = reviewBoardRepository.findByRegionAndTitle("전체", title);
 
-        ReviewBoard allBoardPost = new ReviewBoard();
-        allBoardPost.setTitle(title);
-        allBoardPost.setContent(content);
-        allBoardPost.setRegion("전체");  
-        allBoardPost.setNickname(nickname);
-        allBoardPost.setHit(0L);
-        allBoardPost.setVoter(0L);
-        allBoardPost.setCreatedAt(LocalDateTime.now());
-        allBoardPost.setUpdatedAt(LocalDateTime.now());
+        // "전체" 게시판에 동일한 제목과 내용의 글이 없다면 새로 저장
+        if (existingPost.isEmpty()) {
+            ReviewBoard allBoardPost = new ReviewBoard();
+            allBoardPost.setTitle(title);
+            allBoardPost.setContent(content);
+            allBoardPost.setRegion("전체");
+            allBoardPost.setNickname(nickname);
+            allBoardPost.setHit(0L);
+            allBoardPost.setVoter(0L);
+            allBoardPost.setCreatedAt(LocalDateTime.now());
+            allBoardPost.setUpdatedAt(LocalDateTime.now());
 
-        this.reviewBoardRepository.save(allBoardPost);
+            this.reviewBoardRepository.save(allBoardPost);
+        }
     }
 
     void saveToRegionalBoard(String title, String content, String region, String nickname) {
         ReviewBoard regionalPost = new ReviewBoard();
+
         regionalPost.setTitle(title);
         regionalPost.setContent(content);
         regionalPost.setRegion(region);
@@ -59,8 +65,5 @@ public class ReviewBoardService {
     public ReviewBoard getPostId(Long id) {
         return reviewBoardRepository.findById(id).orElse(null);
     }
-
-
-
 
 }

@@ -1,13 +1,14 @@
 package com.example.user;
 
 import com.example.board.NoticeService;
-import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -23,6 +24,7 @@ public class UserController {
 
     private final UserService userService;
     private final NoticeService noticeService;
+    private final PasswordEncoder passwordEncoder;
 
     @GetMapping("/signup")
     public String signup(@ModelAttribute UserCreateForm userCreateForm) {
@@ -72,27 +74,63 @@ public class UserController {
         return "user/mypage";
     }
 
+    @GetMapping("/mypage/edit")
+    public String editUserInfo(@AuthenticationPrincipal SiteUser siteUser, Model model) {
+        model.addAttribute("user", siteUser);
+        return "#";
+    }
+
+    @PostMapping("/mypage/edit")
+    public String updateUserInfo(@ModelAttribute SiteUser updatedUser,
+                                 @RequestParam("file") MultipartFile file,
+                                 @AuthenticationPrincipal SiteUser currentUser) throws IOException {
+        currentUser.setNickname(updatedUser.getNickname());
+
+        String imageUrl = userService.uploadProfileImage(currentUser.getId(), file);
+        currentUser.setProfileImageUrl(imageUrl);
+
+        userService.updateUser(currentUser);
+        return "redirect:/mypage";
+    }
+
     @PostMapping("/updateNickname")
-    public ResponseEntity<String> updateNickname(@RequestParam Long userId, @RequestParam String nickname) {
+    public String updateNickname(@RequestParam Long userId, @RequestParam String nickname) {
         userService.updateNickname(userId, nickname);
-        return ResponseEntity.ok("닉네임이 성공적으로 수정되었습니다.");
+        return "redirect:/mypage";
     }
 
     @PostMapping("/uploadProfileImage")
-    public ResponseEntity<String> uploadProfileImage(@RequestParam Long userId, @RequestParam MultipartFile profileImage) {
-        try {
-            userService.uploadProfileImage(userId, profileImage);
-            return ResponseEntity.ok("프로필 이미지가 성공적으로 업로드되었습니다.");
-        } catch (IOException e) {
-            return ResponseEntity.status(500).body("이미지 업로드 중 오류가 발생했습니다.");
+    public String uploadProfileImage(@RequestParam("file") MultipartFile file, @AuthenticationPrincipal SiteUser siteUser) throws IOException {
+        String imageUrl = userService.uploadProfileImage(siteUser.getId(), file);
+        siteUser.setProfileImageUrl(imageUrl);
+        userService.updateUser(siteUser);
+        return "redirect:/mypage";
+    }
+
+    @GetMapping("/mypage/change_password")
+    public String changePasswordForm() {
+        return "#";
+    }
+
+    @PostMapping("/mypage/change_password")
+    public String changePassword(@RequestParam("currentPassword") String currentPassword,
+                                 @RequestParam("newPassword") String newPassword,
+                                 @AuthenticationPrincipal SiteUser siteUser) {
+        if(passwordEncoder.matches(currentPassword, siteUser.getPassword())) {
+            siteUser.setPassword(passwordEncoder.encode(newPassword));
+            userService.updateUser(siteUser);
+            return "redirect:/mypage";
+        }else {
+            return "redirect:/mypage/change_password?error";
         }
     }
 
-    @DeleteMapping("/deleteAccount")
-    public ResponseEntity<String> deleteAccount(@RequestParam Long userId) {
-        userService.deleteUser(userId);
-        return ResponseEntity.ok("회원 탈퇴가 완료되었습니다.");
+    @PostMapping("/mypage/delete")
+    public String deleteUser(@AuthenticationPrincipal SiteUser siteUser) {
+        userService.deleteUser(siteUser.getId());
+        return "redirect:/";
     }
+
 
     // 사용자 정보를 반환하는 메서드 (예: 닉네임, 프로필 이미지 URL 등)
     @GetMapping("/userInfo/{userId}")

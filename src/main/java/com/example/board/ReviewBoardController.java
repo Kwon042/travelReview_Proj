@@ -1,5 +1,6 @@
 package com.example.board;
 
+import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -10,6 +11,8 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import jakarta.servlet.http.HttpServletRequest; // Jakarta Servlet을 사용하는 경우
 
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
 import java.util.List;
 
 @RequiredArgsConstructor
@@ -35,55 +38,40 @@ public class ReviewBoardController {
         boolean isAllBoard = "reviewBoard".equals(boardType);
         model.addAttribute("isAllBoard", isAllBoard);
 
-        // 전체 게시판이면 region이 null이거나 "전체"일 때만 지역 선택 블록 보여주기
-        boolean showRegionSelect = isAllBoard && (region == null || region.isEmpty() || "전체".equals(region));
-        model.addAttribute("showRegionSelect", showRegionSelect);
-
-        // 지역 값 처리
-        if (isAllBoard) {
-            // 전체 게시판일 경우 기본값으로 "전체" 설정
-            model.addAttribute("region", "전체");
-        } else {
-            // 도시 게시판의 경우, 전달된 지역 값을 그대로 사용
-            model.addAttribute("region", region);
-        }
+        model.addAttribute("region", region);
 
         return "Boards/write";
     }
 
-    @GetMapping("/reviewBoard")
+    @GetMapping("/reviewBoard") // 중복 제거
     public String showReviewBoard(@RequestParam(name = "region", required = false) String region, Model model) {
         if (region == null || region.isEmpty()) {
             region = "전체";
         }
         List<ReviewBoard> boards = reviewBoardService.getBoardByRegion(region);
+
+        model.addAttribute("region", region);
         model.addAttribute("boards", boards);
-        model.addAttribute("boardType", "reviewBoard");
+        model.addAttribute("isAllBoard", "전체".equals(region)); // 지역이 '전체'인지 확인
+        model.addAttribute("boardType", "reviewBoard"); // 게시판 유형 추가
         return "Boards/reviewBoard";
     }
 
     @PostMapping("/save")
-    @PreAuthorize("isAuthenticated()") // 인증된 사용자만 접근 가능
+    @PreAuthorize("isAuthenticated()")
     public String savePost(@RequestParam String title,
                            @RequestParam String content,
-                           @RequestParam(name = "region", required = false, defaultValue = "전체") String region,
+                           @RequestParam(name = "region", required = true) String region,
                            @RequestParam(name = "nickname") String nickname) {
         reviewBoardService.savePost(title, content, region, nickname);
-        return "redirect:/Boards/reviewBoard";
-    }
-
-    @GetMapping("/Boards/reviewBoard")
-    public String getBoardList(@RequestParam(name = "region", required = false, defaultValue = "전체") String region, Model model) {
-        List<ReviewBoard> boardList;
-
-        if ("전체".equals(region)) {
-            boardList = reviewBoardRepository.findByRegion("전체");
-        } else {
-            boardList = reviewBoardRepository.findByRegion(region);
+        try {
+            String encodedRegion = URLEncoder.encode(region, "UTF-8");
+            return "redirect:/Boards/reviewBoard?region=" + encodedRegion; // 인코딩 적용
+        } catch (UnsupportedEncodingException e) {
+            // 예외 처리 로직
+            e.printStackTrace();
+            return "redirect:/Boards/reviewBoard?region=전체"; // 안전한 기본값 설정
         }
-
-        model.addAttribute("boardList", boardList);
-        return "Boards/reviewBoard";
     }
 
     @GetMapping("/detail/{id}")
