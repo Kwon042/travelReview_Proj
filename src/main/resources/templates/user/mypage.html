@@ -27,12 +27,12 @@
         </tr>
         <tr>
             <td><strong>닉네임</strong></td>
-            <td><span th:text="${user.nickname}"></span></td>
+            <td><span id="currentNickname" th:text="${user.nickname}"></span></td>
             <td class="text-end"><span class="action-button" onclick="openEditModal('nickname')">></span></td>
         </tr>
         <tr>
             <td><strong>이메일</strong></td>
-            <td><span th:text="${user.email}"></span></td>
+            <td><span id="currentEmail" th:text="${user.email}"></span></td>
             <td class="text-end"><span class="action-button" onclick="openEditModal('email')">></span></td>
         </tr>
         <tr>
@@ -50,6 +50,16 @@
     </ul>
     <button id="deleteAccountButton" class="btn btn-danger">회원 탈퇴</button>
 
+    <!-- 프로필 이미지 업로드 모달 -->
+    <div id="profileImageModal" class="modal hidden">
+        <div class="modal-content">
+            <span class="close" onclick="closeProfileImageModal()">&times;</span>
+            <h4>프로필 이미지 업로드</h4>
+            <input type="file" id="profileImageInput" accept="image/*">
+            <button onclick="uploadProfileImage()">업로드</button>
+        </div>
+    </div>
+
     <div id="changePasswordForm" style="display: none;">
         <form action="/mypage/change_password" method="POST">
             <label for="currentPassword">현재 비밀번호</label>
@@ -65,12 +75,15 @@
         </form>
     </div>
     <!-- 사용자 정보 수정 모달 -->
-    <div id="editModal" class="modal" style="display: none;">
+    <div id="editModal" class="modal hidden">
         <div class="modal-content">
             <span class="close" onclick="closeEditModal()">&times;</span>
             <h4>수정할 항목을 선택하세요.</h4>
             <div class="modal-body">
                 <!-- 여기에 동적으로 내용 삽입되도록 설정 -->
+                <button onclick="openProfileImageUpload()">프로필 이미지 변경</button>
+                <button onclick="openNicknameEdit()">닉네임 수정</button>
+                <button onclick="openPasswordChange()">비밀번호 변경</button>
             </div>
         </div>
     </div>
@@ -78,7 +91,10 @@
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-<script src="/static/mypage.js"></script>
+<script src="/mypage.js"></script>
+<script>
+    const currentUserId = "${user.id}";
+</script>
 </body>
 <footer th:replace="~{layout/footer}"></footer>
 </html>

@@ -52,6 +52,20 @@ public class UserService {
         }
     }
 
+    // 이메일 업데이트
+    public void updateEmail(Long userId, String newEmail) {
+        SiteUser user = userRepository.findById(userId)
+                .orElseThrow(() -> new IllegalArgumentException("사용자를 찾을 수 없습니다."));
+
+        // 이메일 중복 체크 (옵션: 다른 사용자와 중복되는지 체크할 수 있음)
+        if (userRepository.existsByEmail(newEmail)) {
+            throw new IllegalArgumentException("이미 사용 중인 이메일입니다.");
+        }
+
+        user.setEmail(newEmail);
+        userRepository.save(user);
+    }
+
     // 파일 업로드
     public String uploadProfileImage(Long userId, MultipartFile file) throws IOException {
         SiteUser user = userRepository.findById(userId).orElse(null);
@@ -94,5 +108,12 @@ public class UserService {
         userRepository.save(user);
     }
 
+    public boolean isEmailAlreadyRegistered(String email) {
+        return userRepository.existsByEmail(email);
+    }
+
+    public boolean isNicknameAlreadyRegistered(String nickname) {
+        return userRepository.existsByNickname(nickname);
+    }
 
 }

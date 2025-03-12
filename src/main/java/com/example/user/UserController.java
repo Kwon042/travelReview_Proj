@@ -4,6 +4,7 @@ import com.example.board.NoticeService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -16,6 +17,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.util.Map;
 
 @RequiredArgsConstructor
 @Controller
@@ -77,7 +79,7 @@ public class UserController {
     @GetMapping("/mypage/edit")
     public String editUserInfo(@AuthenticationPrincipal SiteUser siteUser, Model model) {
         model.addAttribute("user", siteUser);
-        return "#";
+        return "user/mypage";
     }
 
     @PostMapping("/mypage/edit")
@@ -93,10 +95,44 @@ public class UserController {
         return "redirect:/mypage";
     }
 
-    @PostMapping("/updateNickname")
-    public String updateNickname(@RequestParam Long userId, @RequestParam String nickname) {
-        userService.updateNickname(userId, nickname);
-        return "redirect:/mypage";
+    @PostMapping("/mypage/update")
+    public ResponseEntity<?> updateUserInfo(@RequestBody UserUpdateRequest request,
+                                            @AuthenticationPrincipal SiteUser user) {
+        if (user == null) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(Map.of("success", false, "message", "로그인이 필요합니다."));
+        }
+
+        try {
+            switch (request.getField()) {
+                case "nickname":
+                    userService.updateNickname(user.getId(), request.getValue());
+                    break;
+                case "email":
+                    userService.updateEmail(user.getId(), request.getValue());
+                    break;
+                default:
+                    return ResponseEntity.badRequest().body(Map.of("success", false, "message", "잘못된 요청입니다."));
+            }
+            return ResponseEntity.ok(Map.of("success", true, "message", "성공적으로 변경되었습니다."));
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(Map.of("success", false, "message", "변경 중 오류가 발생했습니다."));
+        }
+    }
+
+    // 중복 체크 공통 메서드
+    private String checkFieldDuplicate(String field, String value) {
+        if ("nickname".equals(field)) {
+            boolean nicknameExists = userService.isNicknameAlreadyRegistered(value);
+            if (nicknameExists) {
+                return "이미 등록된 닉네임입니다.";
+            }
+        } else if ("email".equals(field)) {
+            boolean emailExists = userService.isEmailAlreadyRegistered(value);
+            if (emailExists) {
+                return "이미 등록된 이메일입니다.";
+            }
+        }
+        return null; // 중복이 없으면 null 반환
     }
 
     @PostMapping("/uploadProfileImage")
