@@ -1,9 +1,27 @@
 document.addEventListener("DOMContentLoaded", function () {
+    let currentUserId;
+    // 로그인한 사용자 ID를 서버에서 가져오는 함수
+    function fetchCurrentUserId() {
+        fetch('/user/getCurrentUserId') // 현재 사용자 ID를 반환하는 API 엔드포인트
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    currentUserId = data.userId; // 사용자 ID 저장
+                } else {
+                    console.error("사용자 ID를 가져오는 데 실패했습니다.");
+                }
+            })
+            .catch(error => console.error("오류 발생:", error));
+    }
+    // 페이지 로드 시 사용자 ID 가져옴
+    fetchCurrentUserId();
     // 🔹 프로필 이미지 모달 열기
     function openProfileImageModal() {
         const modal = document.getElementById('profileImageModal');
+        const input = document.getElementById('profileImageInput');
         if (modal) {
             modal.classList.remove('hidden');  // 'hidden' 클래스를 제거하여 모달 열기
+            input.value = '';  // 파일 입력 초기화
         } else {
             console.error("모달 요소를 찾을 수 없습니다.");
         }
@@ -12,9 +30,57 @@ document.addEventListener("DOMContentLoaded", function () {
     // 🔹 프로필 이미지 모달 닫기
     function closeProfileImageModal() {
         const modal = document.getElementById('profileImageModal');
+        const input = document.getElementById('profileImageInput');
         if (modal) {
             modal.classList.add('hidden');  // 'hidden' 클래스를 추가하여 모달 닫기
+            input.value = '';  // 파일 입력 초기화
         }
+    }
+
+    // 🔹 프로필 이미지 업로드
+    window.uploadProfileImage = function() {
+        const input = document.getElementById('profileImageInput');
+        const file = input.files[0]; // 선택된 파일 가져오기
+
+        if (!file) {
+            alert("파일을 선택해 주세요.");
+            return;
+        }
+
+        const formData = new FormData();
+        formData.append('userId', currentUserId); // 'userId' 매개변수 추가
+        formData.append('profileImage', file); // 'profileImage'라는 필드 이름으로 파일 추가
+
+        // 서버로 파일 전송
+        fetch('/user/uploadProfileImage', {
+            method: 'POST',
+            body: formData
+        })
+        .then(response => {
+            if (!response.ok) {
+                return response.json().then(data => {
+                    throw new Error(data.message || `서버에서 오류가 발생했습니다. 상태 코드: ${response.status}`);
+                });
+            }
+            return response.json(); // JSON 응답 처리
+        })
+        .then(data => {
+            if (data.success) {
+                // 업로드 성공 시 프로필 이미지 갱신
+                const profileImage = document.querySelector('.profile-image');
+                if (profileImage) {
+                    profileImage.src = data.newProfileImageUrl;
+                }
+                alert("프로필 이미지가 성공적으로 업로드 되었습니다.");
+                closeProfileImageModal();
+            } else {
+                alert(data.message);
+            }
+        })
+        .catch(error => {
+            console.error("업로드 중 오류 발생:", error);
+            alert("업로드 중 오류가 발생했습니다.");
+        });
     }
 
     // 🔹 비밀번호 수정 폼 보이기/숨기기
@@ -114,19 +180,12 @@ document.addEventListener("DOMContentLoaded", function () {
                 }
                 closeEditModal(); // 모달 닫기
             } else {
-               // 서버에서 받은 중복 메시지 처리
-               if (data.message === "이미 등록된 닉네임입니다.") {
-                   alert("이미 등록된 닉네임입니다.");
-               } else if (data.message === "이미 등록된 이메일입니다.") {
-                   alert("이미 등록된 이메일입니다.");
-               } else {
-                   alert(`변경에 실패했습니다: ${data.message}`);
-               }
+                showErrorModal(data.message); // 오류 발생 시 메시지 모달 표시
             }
         })
         .catch(error => {
-            console.error("업데이트 중 오류 발생:", error);
-            alert("변경 중 오류가 발생했습니다.");
+            console.error("업데이트 중 오류 발생:", error.message);
+            showErrorModal(error.message);
         });
     }
 
@@ -136,6 +195,93 @@ document.addEventListener("DOMContentLoaded", function () {
         if (modal) {
             modal.style.display = 'none'; // 모달 숨기기
         }
+    }
+
+    // 🔹 오류 모달 닫기
+    function closeErrorModal() {
+        const modal = document.getElementById('errorModal');
+        if (modal) {
+            modal.classList.add('hidden'); // 모달 숨기기
+        }
+    }
+
+    // 모달 메세지 표시하는 함수
+    function showErrorModal(message) {
+        const errorMessage = document.getElementById('errorMessage');
+        errorMessage.innerText = message; // 메시지 설정
+        const modal = document.getElementById('errorModal');
+        modal.classList.remove('hidden'); // 모달 열기
+    }
+
+    // URL 체크
+    if (window.location.pathname === '/user/mypage/change_password') {
+        openChangePasswordModal(); // 모달 열기
+    }
+    // 비밀번호 수정 모달 열기 (DOMContentLoaded 이벤트 안에 정의- window. 붙어야)
+    window.openChangePasswordModal = function() {
+        const modal = document.getElementById('changePasswordModal');
+        if (modal) {
+            modal.classList.remove('hidden'); // 'hidden' 클래스를 제거하여 모달 열기
+        }
+    }
+
+    // 비밀번호 수정 모달 닫기
+    function closeChangePasswordModal() {
+        const modal = document.getElementById('changePasswordModal');
+        if (modal) {
+            modal.classList.add('hidden'); // 'hidden' 클래스를 추가하여 모달 닫기
+            document.getElementById('currentPassword').value = '';
+            document.getElementById('newPassword').value = '';
+        }
+    }
+
+    function changePassword() {
+        const currentPassword = document.getElementById('currentPassword').value;
+        const newPassword = document.getElementById('newPassword').value;
+        const newPasswordConfirm = document.getElementById('newPasswordConfirm').value;
+
+        // 모든 필드 입력 확인
+        if (!currentPassword || !newPassword || !newPasswordConfirm) {
+            alert("모든 필드를 입력하세요.");
+            return;
+        }
+
+        // 새 비밀번호와 확인 비밀번호가 동일한지 확인
+        if (newPassword !== newPasswordConfirm) {
+            alert("새 비밀번호와 새 비밀번호 확인이 일치하지 않습니다.");
+            return;
+        }
+
+        // 새 비밀번호가 현재 비밀번호와 일치하지 않는지 확인
+        if (newPassword === currentPassword) {
+            alert("새 비밀번호는 현재 비밀번호와 동일할 수 없습니다.");
+            return;
+        }
+
+        // 비밀번호 변경 요청
+        fetch('/user/mypage/change_password', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded'
+            },
+            body: `currentPassword=${encodeURIComponent(currentPassword)}&newPassword=${encodeURIComponent(newPassword)}`
+        })
+        .then(response => {
+            if (!response.ok) {
+                return response.text().then(text => {
+                    throw new Error(text || `서버에서 오류가 발생했습니다. 상태 코드: ${response.status}`);
+                });
+            }
+            return response.text();
+        })
+        .then(data => {
+            alert("비밀번호가 성공적으로 변경되었습니다.");
+            closeChangePasswordModal(); // 모달 닫기
+        })
+        .catch(error => {
+            console.error("비밀번호 변경 중 오류:", error);
+            alert("비밀번호 변경 중 오류가 발생했습니다.");
+        });
     }
 
     // 🔹 회원 탈퇴 버튼 이벤트 등록
@@ -163,4 +309,6 @@ document.addEventListener("DOMContentLoaded", function () {
     window.openEditModal = openEditModal;
     window.togglePasswordForm = togglePasswordForm;
     window.closeEditModal = closeEditModal;
+    window.closeErrorModal = closeErrorModal;
+    window.changePassword = changePassword;  // 전역으로 등록
 });

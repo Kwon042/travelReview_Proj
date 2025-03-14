@@ -95,11 +95,13 @@ public class UserController {
         return "redirect:/mypage";
     }
 
+    // 사용자 닉네임 및 이메일 업데이트 메서드
     @PostMapping("/mypage/update")
     public ResponseEntity<?> updateUserInfo(@RequestBody UserUpdateRequest request,
                                             @AuthenticationPrincipal SiteUser user) {
         if (user == null) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(Map.of("success", false, "message", "로그인이 필요합니다."));
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+                    .body(Map.of("success", false, "message", "로그인이 필요합니다."));
         }
 
         try {
@@ -111,41 +113,52 @@ public class UserController {
                     userService.updateEmail(user.getId(), request.getValue());
                     break;
                 default:
-                    return ResponseEntity.badRequest().body(Map.of("success", false, "message", "잘못된 요청입니다."));
+                    return ResponseEntity.badRequest()
+                            .body(Map.of("success", false, "message", "잘못된 요청입니다."));
             }
             return ResponseEntity.ok(Map.of("success", true, "message", "성공적으로 변경되었습니다."));
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.badRequest()
+                    .body(Map.of("success", false, "message", e.getMessage()));
         } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(Map.of("success", false, "message", "변경 중 오류가 발생했습니다."));
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(Map.of("success", false, "message", "변경 중 오류가 발생했습니다."));
         }
-    }
-
-    // 중복 체크 공통 메서드
-    private String checkFieldDuplicate(String field, String value) {
-        if ("nickname".equals(field)) {
-            boolean nicknameExists = userService.isNicknameAlreadyRegistered(value);
-            if (nicknameExists) {
-                return "이미 등록된 닉네임입니다.";
-            }
-        } else if ("email".equals(field)) {
-            boolean emailExists = userService.isEmailAlreadyRegistered(value);
-            if (emailExists) {
-                return "이미 등록된 이메일입니다.";
-            }
-        }
-        return null; // 중복이 없으면 null 반환
     }
 
     @PostMapping("/uploadProfileImage")
-    public String uploadProfileImage(@RequestParam("file") MultipartFile file, @AuthenticationPrincipal SiteUser siteUser) throws IOException {
-        String imageUrl = userService.uploadProfileImage(siteUser.getId(), file);
-        siteUser.setProfileImageUrl(imageUrl);
-        userService.updateUser(siteUser);
-        return "redirect:/mypage";
+    public ResponseEntity<?> uploadProfileImage(
+            @AuthenticationPrincipal SiteUser user,
+            @RequestParam("profileImage") MultipartFile file) {
+
+        try {
+            if (user == null) {
+                return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+                        .body(Map.of("success", false, "message", "로그인이 필요합니다."));
+            }
+
+            // 프로필 이미지 업로드 로직
+            String imageUrl = userService.uploadProfileImage(user.getId(), file);
+            return ResponseEntity.ok(Map.of("success", true, "newProfileImageUrl", imageUrl));
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.badRequest().body(Map.of("success", false, "message", e.getMessage()));
+        } catch (IOException e) {
+            // 예외 발생 시 로그를 남깁니다.
+            e.printStackTrace(); // 또는 로깅 프레임워크를 사용하여 로그 남기기
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(Map.of("success", false, "message", "파일 업로드 중 오류가 발생했습니다."));
+        } catch (Exception e) {
+            e.printStackTrace(); // 또는 로깅 프레임워크를 사용하여 로그 남기기
+
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(Map.of("success", false, "message", "예기치 않은 오류가 발생했습니다."));
+        }
     }
 
     @GetMapping("/mypage/change_password")
-    public String changePasswordForm() {
-        return "#";
+    public String showChangePasswordPage() {
+        // 모달로 보내기
+        return "redirect:/user/mypage";
     }
 
     @PostMapping("/mypage/change_password")
@@ -155,9 +168,9 @@ public class UserController {
         if(passwordEncoder.matches(currentPassword, siteUser.getPassword())) {
             siteUser.setPassword(passwordEncoder.encode(newPassword));
             userService.updateUser(siteUser);
-            return "redirect:/mypage";
+            return "redirect:/user/mypage";
         }else {
-            return "redirect:/mypage/change_password?error";
+            return "redirect:/user/mypage/change_password?error";
         }
     }
 
@@ -167,16 +180,13 @@ public class UserController {
         return "redirect:/";
     }
 
-
-    // 사용자 정보를 반환하는 메서드 (예: 닉네임, 프로필 이미지 URL 등)
-    @GetMapping("/userInfo/{userId}")
-    public ResponseEntity<SiteUser> getUserInfo(@PathVariable Long userId) {
-        SiteUser user = userService.getUserById(userId);
-        if (user != null) {
-            return ResponseEntity.ok(user);
-        } else {
-            return ResponseEntity.notFound().build();
+    @GetMapping("/getCurrentUserId")
+    public ResponseEntity<Map<String, Object>> getCurrentUserId(@AuthenticationPrincipal SiteUser user) {
+        if (user == null) {
+            return ResponseEntity.ok(Map.of("success", false));
         }
+        return ResponseEntity.ok(Map.of("success", true, "userId", user.getId()));
     }
+
 
 }
