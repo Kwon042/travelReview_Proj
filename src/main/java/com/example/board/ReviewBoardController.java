@@ -2,6 +2,7 @@ package com.example.board;
 
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
+import lombok.Value;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.web.csrf.CsrfToken;
@@ -10,6 +11,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import jakarta.servlet.http.HttpServletRequest; // Jakarta Servlet을 사용하는 경우
+import org.springframework.web.multipart.MultipartFile;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
@@ -43,12 +45,21 @@ public class ReviewBoardController {
         return "Boards/write";
     }
 
-    @GetMapping("/reviewBoard") // 중복 제거
+    @GetMapping("/reviewBoard")
     public String showReviewBoard(@RequestParam(name = "region", required = false) String region, Model model) {
         if (region == null || region.isEmpty()) {
             region = "전체";
         }
         List<ReviewBoard> boards = reviewBoardService.getBoardByRegion(region);
+
+        // 각 게시판의 이미지 URL을 model에 추가
+        for (ReviewBoard board : boards) {
+            if (board.getReviewFileImg() != null && !board.getReviewFileImg().isEmpty()) {
+                // 이미지 경로가 존재하면
+                String imagePath = "/uploads/review_images/" + board.getReviewFileImg();
+                model.addAttribute("imagePath_" + board.getId(), imagePath);
+            }
+        }
 
         model.addAttribute("region", region);
         model.addAttribute("boards", boards);
@@ -62,15 +73,16 @@ public class ReviewBoardController {
     public String savePost(@RequestParam String title,
                            @RequestParam String content,
                            @RequestParam(name = "region", required = true) String region,
-                           @RequestParam(name = "nickname") String nickname) {
-        reviewBoardService.savePost(title, content, region, nickname);
+                           @RequestParam(name = "nickname") String nickname,
+                           @RequestParam(name = "image", required = false) List<MultipartFile> images) {
+        reviewBoardService.savePost(title, content, region, nickname, images);
         try {
             String encodedRegion = URLEncoder.encode(region, "UTF-8");
-            return "redirect:/Boards/reviewBoard?region=" + encodedRegion; // 인코딩 적용
+            return "redirect:/Boards/reviewBoard?region=" + encodedRegion;
         } catch (UnsupportedEncodingException e) {
             // 예외 처리 로직
             e.printStackTrace();
-            return "redirect:/Boards/reviewBoard?region=전체"; // 안전한 기본값 설정
+            return "redirect:/Boards/reviewBoard?region=전체";
         }
     }
 
@@ -78,6 +90,7 @@ public class ReviewBoardController {
     public String showDetail(@PathVariable("id") Long id, Model model) {
         ReviewBoard post = reviewBoardService.getPostId(id);
         model.addAttribute("post", post);
+        model.addAttribute("imagePath", "/images/" + post.getImageName());
         return "Boards/detail";
     }
 

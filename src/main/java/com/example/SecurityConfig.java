@@ -26,7 +26,7 @@ public class SecurityConfig {
         http
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers(
-                                "/static/**", "/css/**", "/js/**", "/images/**", "/main.css"
+                                "/static/**", "/css/**", "/js/**", "/images/**", "/main.css", "/uploads"
                         ).permitAll()  // ✅ 정적 리소스 허용
                         .requestMatchers(
                                 "/Boards/reviewBoard/**", "/Boards/write", "/Boards/save"

@@ -13,6 +13,10 @@
   <p>지역: <span th:text="${post.region}"></span></p>
   <p th:text="${post.content}"></p>
 
+  <div>
+    <h3>업로드된 이미지:</h3>
+    <img th:src="@{/images/${post.imageName}}" alt="게시글 이미지" />
+  </div>
 
   <a href="/reviewBoard">목록으로 돌아가기</a>
 </div>

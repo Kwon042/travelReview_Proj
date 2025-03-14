@@ -44,7 +44,7 @@
         <!-- 게시판 내용 -->
         <main class="col-md-9">
             <!-- 게시판 제목 -->
-            <h2 id="region-title">전체 리뷰 게시판</h2>
+            <h2 id="region-title" th:text="'전체 리뷰 게시판'"></h2>
             <div class="divider"></div>
             <hr style="border: 1px solid #5b30a4; margin: 20px 0;"> <!-- 구분선 추가 -->
 
@@ -53,6 +53,7 @@
                 <table>
                     <thead>
                     <tr>
+                        <th>지역</th>
                         <th>제목</th>
                         <th>작성자</th>
                         <th>조회수</th>
@@ -61,13 +62,14 @@
                     <tbody>
                     <!-- Thymeleaf를 사용하여 서버에서 넘긴 게시판 내용 출력 -->
                     <tr th:each="board : ${boards}">
+                        <td th:text="${board.region}"></td>
                         <td><a th:href="@{/Boards/detail/{id}(id=${board.id})}" th:text="${board.title}"></a></td>
                         <td th:text="${board.nickname}"></td>
                         <td th:text="${board.hit}"></td>
                     </tr>
                     </tbody>
                 </table>
-                <a id="writeButton" th:if="${!isAllBoard}" th:href="@{/Boards/write(region='전체', boardType='reviewBoard')}" class="btn btn-success write-button">글쓰기</a>
+                <a id="writeButton" th:if="${!isAllBoard}" th:href="@{/Boards/write(region=${region}, boardType='reviewBoard')}" class="btn btn-success write-button">글쓰기</a>
             </div>
         </main>
     </div>

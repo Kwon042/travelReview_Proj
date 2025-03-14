@@ -52,4 +52,14 @@ public class ReviewBoard {
 
     @Column(name = "reviewfile_img")
     private String reviewFileImg;
+
+    private String reviewFileImgs; // 여러 이미지 경로를 저장할 필드
+
+    public String getImageName() {
+        return reviewFileImg;
+    }
+
+    public Long getId() {
+        return id;
+    }
 }

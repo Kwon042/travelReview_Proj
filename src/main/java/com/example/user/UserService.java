@@ -110,22 +110,20 @@ public class UserService {
         }
 
         // 업로드 디렉토리 확인 및 생성
-        if (!Files.exists(uploadPath)) {
-            Files.createDirectories(uploadPath); // 디렉토리 생성
+        Path userProfilePath = Paths.get("/path/to/uploads/profile_images");
+        if (!Files.exists(userProfilePath)) {
+            Files.createDirectories(userProfilePath);
         }
 
-        String fileName = System.currentTimeMillis() + "_" + originalFilename; // 중복 방지
-        Path imageFile = uploadPath.resolve(fileName); // 파일 경로 설정
+        String fileName = System.currentTimeMillis() + "_" + originalFilename;
+        String imageUrl = "/uploads/profile_images/" + fileName;
+
+        Path imageFile = userProfilePath.resolve(fileName);
 
         // 파일 저장
         file.transferTo(imageFile.toFile());
 
-        // URL 설정
-        String imageUrl = "/uploads/" + fileName;
-        user.setProfileImageUrl(imageUrl);
-        userRepository.save(user);
-
-        return imageUrl;
+        return "/uploads/profile_images/" + fileName;
     }
 
 
