@@ -284,24 +284,31 @@ document.addEventListener("DOMContentLoaded", function () {
         });
     }
 
-    // 🔹 회원 탈퇴 버튼 이벤트 등록
-    const deleteAccountButton = document.getElementById("deleteAccountButton");
-    if (deleteAccountButton) {
-        deleteAccountButton.addEventListener("click", function () {
-            if (confirm("정말로 회원 탈퇴를 하시겠습니까?")) {
-                fetch("/user/deleteAccount", {
-                    method: "DELETE"
-                }).then(response => {
-                    if (response.ok) {
-                        alert("회원 탈퇴가 완료되었습니다.");
-                        window.location.href = "/";
-                    } else {
-                        alert("탈퇴에 실패했습니다.");
-                    }
-                });
-            }
-        });
-    }
+    // 회원 탈퇴 버튼 클릭 이벤트
+    document.getElementById('deleteAccountButton').addEventListener('click', function () {
+        if (confirm("정말로 회원 탈퇴를 하시겠습니까?")) {
+            fetch('/user/deleteAccount', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error("회원 탈퇴 실패");
+                }
+                return response.json();
+            })
+            .then(data => {
+                alert(data.message); // 서버에서 받은 응답 메시지 알림
+                window.location.href = "/";
+            })
+            .catch(error => {
+                console.error("업로드 중 오류 발생:", error);
+                alert("업로드 중 오류가 발생했습니다.");
+            });
+        }
+    });
 
     // 🔹 전역에서 접근할 수 있도록 함수 등록
     window.openProfileImageModal = openProfileImageModal;

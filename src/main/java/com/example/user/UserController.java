@@ -190,5 +190,21 @@ public class UserController {
         return ResponseEntity.ok(Map.of("success", true, "userId", user.getId()));
     }
 
+    @PostMapping("/deleteAccount")
+    public ResponseEntity<?> deleteAccount(@AuthenticationPrincipal SiteUser user) {
+        if (user == null) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+                    .body(Map.of("success", false, "message", "로그인이 필요합니다."));
+        }
+
+        try {
+            userService.deleteUser(user.getId());
+            return ResponseEntity.ok(Map.of("success", true, "message", "계정이 삭제되었습니다."));
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(Map.of("success", false, "message", "계정 삭제 중 오류가 발생했습니다."));
+        }
+    }
+
 
 }
