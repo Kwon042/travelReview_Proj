@@ -44,6 +44,7 @@ dependencies {
 	implementation 'org.thymeleaf.extras:thymeleaf-extras-springsecurity6'
 
 	compileOnly 'org.projectlombok:lombok'
+	compileOnly 'javax.servlet:javax.servlet-api:4.0.1' // 서블릿 API 의존성 추가
 	annotationProcessor 'org.projectlombok:lombok'
 
 	runtimeOnly 'com.mysql:mysql-connector-j'

@@ -1,6 +1,8 @@
 package com.example.user;
 
 import com.example.board.NoticeService;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.dao.DataIntegrityViolationException;
@@ -10,6 +12,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.web.authentication.logout.SecurityContextLogoutHandler;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -191,7 +194,7 @@ public class UserController {
     }
 
     @PostMapping("/deleteAccount")
-    public ResponseEntity<?> deleteAccount(@AuthenticationPrincipal SiteUser user) {
+    public ResponseEntity<?> deleteAccount(@AuthenticationPrincipal SiteUser user, HttpServletRequest request, HttpServletResponse response) {
         if (user == null) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
                     .body(Map.of("success", false, "message", "로그인이 필요합니다."));
@@ -199,6 +202,11 @@ public class UserController {
 
         try {
             userService.deleteUser(user.getId());
+
+            // 로그아웃 처리
+            SecurityContextLogoutHandler logoutHandler = new SecurityContextLogoutHandler();
+            logoutHandler.logout(request, response, SecurityContextHolder.getContext().getAuthentication()); // Authentication 추가
+
             return ResponseEntity.ok(Map.of("success", true, "message", "계정이 삭제되었습니다."));
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
