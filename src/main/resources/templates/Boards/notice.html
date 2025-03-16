@@ -45,6 +45,7 @@
         <main class="col-md-9">
             <!-- 게시판 제목 -->
             <h2 id="region-title">공지사항</h2>
+            <p></p>
             <div class="divider"></div>
             <hr style="border: 1px solid #5b30a4; margin: 20px 0;"> <!-- 구분선 추가 -->
 
@@ -53,21 +54,26 @@
                 <table>
                     <thead>
                     <tr>
+                        <th>게시글 번호</th>
                         <th>제목</th>
                         <th>작성자</th>
+                        <th>생성일시</th>
                         <th>조회수</th>
                     </tr>
                     </thead>
                     <tbody>
                     <!-- Thymeleaf를 사용하여 서버에서 넘긴 게시판 내용 출력 -->
                     <tr th:each="notice : ${notices}">
+                        <td th:text="${notice.id}"></td>
                         <td><a th:href="@{/Boards/notice/detail/{id}(id=${notice.id})}" th:text="${notice.title}"></a></td>
                         <td th:text="${notice.nickname}"></td>
+                        <td th:text="${#dates.format(notice.creationDate, 'yyyy-MM-dd HH:mm')}"></td>
                         <td th:text="${notice.hit}"></td>
                     </tr>
                     </tbody>
                 </table>
-                <a th:href="@{/Boards/write(region='전체', boardType='notice')}" class="btn btn-success write-button">글쓰기</a>
+                <a th:href="@{${boardType == 'reviewBoard' ? '/Boards/write(region=${region}, boardType=${boardType})' : '/Boards/write(boardType=${boardType})'}}"
+                   class="btn btn-success write-button">글쓰기</a>
             </div>
         </main>
     </div>

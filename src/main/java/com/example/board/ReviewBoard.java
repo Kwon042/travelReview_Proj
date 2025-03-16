@@ -49,6 +49,11 @@ public class ReviewBoard {
             this.voter = 0L;
         }
     }
+    // 객체가 수정될 때마다 updatedAt을 현재 시간으로 갱신
+    @PreUpdate
+    public void preUpdate() {
+        this.updatedAt = LocalDateTime.now();
+    }
 
     @Column(name = "reviewfile_img")
     private String reviewFileImg;

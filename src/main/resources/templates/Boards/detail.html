@@ -2,23 +2,72 @@
 <html lang="ko" xmlns:th="http://www.w3.org/1999/xhtml">
 <head>
   <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>게시글 상세</title>
+  <link rel="stylesheet" href="/header.css">
+  <link rel="stylesheet" href="/detail.css">
+  <link rel="stylesheet" href="/footer.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
 </head>
 <body>
-<h1>게시글 상세</h1>
 
-<div>
-  <h2 th:text="${post.title}"></h2>
-  <p>작성자: <span th:text="${post.nickname}"></span></p>
-  <p>지역: <span th:text="${post.region}"></span></p>
-  <p th:text="${post.content}"></p>
+<!-- 네비게이션바 -->
+<header th:replace="~{layout/header :: navbarFragment}"></header>
 
-  <div>
-    <h3>업로드된 이미지:</h3>
-    <img th:src="@{/images/${post.imageName}}" alt="게시글 이미지" />
+<div class="container mt-4">
+  <div class="row">
+    <!-- 왼쪽 사이드바 (모든 게시판에서 고정) -->
+    <aside class="col-md-3 sidebar">
+      <div class="search-section">
+        <input type="text" class="search-bar" placeholder="검색" />
+        <select id="travel-type" class="form-select" aria-label="여행 종류 선택">
+          <option value="여행사">여행사</option>
+          <option value="자유여행">자유여행</option>
+        </select>
+      </div>
+      <div class="board-list">
+        <h3>게시판</h3>
+        <div class="divider"></div>
+        <ul>
+          <li><a href="/Boards/notice">공지사항</a></li>
+          <li><a href="/Boards/reviewBoard">리뷰게시판</a></li>
+          <li><a href="/Boards/freeBoard">자유게시판</a></li>
+        </ul>
+      </div>
+    </aside>
+
+    <!-- 게시글 상세 내용 -->
+    <main class="col-md-9">
+      <h2 id="region-title" th:text="${post.region != null ? post.region + ' 상세 게시판' : '기본 상세 게시판'}"></h2>
+      <div class="divider"></div>
+      <hr style="border: 1px solid #5b30a4; margin: 20px 0;"> <!-- 구분선 추가 -->
+
+      <div class="post-detail">
+        <p class="post-meta"><strong>작성자:</strong> <span th:text="${post.nickname}"></span></p>
+        <p class="post-meta"><strong>지역:</strong> <span th:text="${post.region}"></span></p>
+        <p class="post-content" th:text="${post.content}"></p>
+
+        <div class="post-image">
+          <img th:src="@{/images/${post.imageName}}" alt="게시글 이미지" />
+        </div>
+      </div>
+
+      <a href="/Boards/reviewBoard" class="btn btn-primary back-button">목록으로 돌아가기</a>
+    </main>
   </div>
-
-  <a href="/reviewBoard">목록으로 돌아가기</a>
 </div>
+
+<!-- 풋터 추가 -->
+<footer th:replace="~{layout/footer}"></footer>
+
+<script>
+  document.addEventListener("DOMContentLoaded", function() {
+      const urlParams = new URLSearchParams(window.location.search);
+      const region = urlParams.get('region') || "전체"; // 기본값: '전체'
+
+      document.getElementById('region-title').textContent = `${region} 게시판`;
+  });
+</script>
+
 </body>
 </html>

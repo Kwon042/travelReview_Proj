@@ -30,4 +30,7 @@ public class FreeBoard {
     private Long hit; // 조회수
     private Long voter; // 찜수
 
+    private String freeFileImgs;
+
+
 }

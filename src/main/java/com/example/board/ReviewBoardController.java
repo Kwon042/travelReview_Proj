@@ -87,10 +87,13 @@ public class ReviewBoardController {
     }
 
     @GetMapping("/detail/{id}")
-    public String showDetail(@PathVariable("id") Long id, Model model) {
+    public String detailPage(@PathVariable Long id, @RequestParam String region, Model model) {
         ReviewBoard post = reviewBoardService.getPostId(id);
+
         model.addAttribute("post", post);
-        model.addAttribute("imagePath", "/images/" + post.getImageName());
+        model.addAttribute("region", region);
+
+        // "Boards/detail" 뷰를 반환
         return "Boards/detail";
     }
 
