@@ -139,16 +139,18 @@ public class UserController {
 
             // 프로필 이미지 업로드 로직
             String imageUrl = userService.uploadProfileImage(user.getId(), file);
+            System.out.println("Uploaded image URL: " + imageUrl); // 새로 업로드한 이미지 URL 출력
+
             return ResponseEntity.ok(Map.of("success", true, "newProfileImageUrl", imageUrl));
         } catch (IllegalArgumentException e) {
             return ResponseEntity.badRequest().body(Map.of("success", false, "message", e.getMessage()));
         } catch (IOException e) {
             // 예외 발생 시 로그를 남깁니다.
-            e.printStackTrace(); // 또는 로깅 프레임워크를 사용하여 로그 남기기
+            e.printStackTrace();
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                     .body(Map.of("success", false, "message", "파일 업로드 중 오류가 발생했습니다."));
         } catch (Exception e) {
-            e.printStackTrace(); // 또는 로깅 프레임워크를 사용하여 로그 남기기
+            e.printStackTrace();
 
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                     .body(Map.of("success", false, "message", "예기치 않은 오류가 발생했습니다."));

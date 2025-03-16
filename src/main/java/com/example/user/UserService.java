@@ -99,31 +99,28 @@ public class UserService {
             throw new IllegalArgumentException("파일 이름이 유효하지 않습니다.");
         }
 
-        // 파일 확장자 및 크기 검사
-        String fileExtension = originalFilename.substring(originalFilename.lastIndexOf(".") + 1);
-        if (!Arrays.asList("jpg", "jpeg", "png").contains(fileExtension.toLowerCase())) {
-            throw new IllegalArgumentException("허용되지 않는 파일 형식입니다.");
-        }
-
         if (file.getSize() > MAX_FILE_SIZE) {
             throw new IllegalArgumentException("파일 크기가 너무 큽니다. 최대 " + (MAX_FILE_SIZE / (1024 * 1024)) + "MB 이하로 업로드 해주세요.");
         }
 
         // 업로드 디렉토리 확인 및 생성
-        Path userProfilePath = Paths.get("/path/to/uploads/profile_images");
-        if (!Files.exists(userProfilePath)) {
-            Files.createDirectories(userProfilePath);
+        if (!Files.exists(uploadPath)) {
+            Files.createDirectories(uploadPath);
         }
 
         String fileName = System.currentTimeMillis() + "_" + originalFilename;
-        String imageUrl = "/uploads/profile_images/" + fileName;
-
-        Path imageFile = userProfilePath.resolve(fileName);
+        // 파일 경로
+        Path imageFile = uploadPath.resolve(fileName);
 
         // 파일 저장
         file.transferTo(imageFile.toFile());
 
-        return "/uploads/profile_images/" + fileName;
+        // URL 설정
+        String imageUrl = "/uploads/" + fileName;
+        user.setProfileImageUrl(imageUrl);
+        userRepository.save(user);
+
+        return imageUrl;
     }
 
 

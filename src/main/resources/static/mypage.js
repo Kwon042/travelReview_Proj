@@ -38,50 +38,50 @@ document.addEventListener("DOMContentLoaded", function () {
     }
 
     // 🔹 프로필 이미지 업로드
-    window.uploadProfileImage = function() {
-        const input = document.getElementById('profileImageInput');
-        const file = input.files[0]; // 선택된 파일 가져오기
+     window.uploadProfileImage = function() {
+         const input = document.getElementById('profileImageInput');
+         const file = input.files[0]; // 선택된 파일 가져오기
 
-        if (!file) {
-            alert("파일을 선택해 주세요.");
-            return;
-        }
+         if (!file) {
+             alert("파일을 선택해 주세요.");
+             return;
+         }
 
-        const formData = new FormData();
-        formData.append('userId', currentUserId); // 'userId' 매개변수 추가
-        formData.append('profileImage', file); // 'profileImage'라는 필드 이름으로 파일 추가
+         const formData = new FormData();
+         formData.append('userId', currentUserId); // 'userId' 매개변수 추가
+         formData.append('profileImage', file); // 'profileImage'라는 필드 이름으로 파일 추가
 
-        // 서버로 파일 전송
-        fetch('/user/uploadProfileImage', {
-            method: 'POST',
-            body: formData
-        })
-        .then(response => {
-            if (!response.ok) {
-                return response.json().then(data => {
-                    throw new Error(data.message || `서버에서 오류가 발생했습니다. 상태 코드: ${response.status}`);
-                });
-            }
-            return response.json(); // JSON 응답 처리
-        })
-        .then(data => {
-            if (data.success) {
-                // 업로드 성공 시 프로필 이미지 갱신
-                const profileImage = document.querySelector('.profile-image');
-                if (profileImage) {
-                    profileImage.src = data.newProfileImageUrl;
-                }
-                alert("프로필 이미지가 성공적으로 업로드 되었습니다.");
-                closeProfileImageModal();
-            } else {
-                alert(data.message);
-            }
-        })
-        .catch(error => {
-            console.error("업로드 중 오류 발생:", error);
-            alert("업로드 중 오류가 발생했습니다.");
-        });
-    }
+         // 서버로 파일 전송
+         fetch('/user/uploadProfileImage', {
+             method: 'POST',
+             body: formData
+         })
+         .then(response => {
+             if (!response.ok) {
+                 return response.json().then(data => {
+                     throw new Error(data.message || `서버에서 오류가 발생했습니다. 상태 코드: ${response.status}`);
+                 });
+             }
+             return response.json(); // JSON 응답 처리
+         })
+         .then(data => {
+             if (data.success) {
+                 // 업로드 성공 시 프로필 이미지 갱신
+                 const profileImage = document.querySelector('.profile-image');
+                 if (profileImage) {
+                     profileImage.src = data.newProfileImageUrl;
+                 }
+                 alert("프로필 이미지가 성공적으로 업로드 되었습니다.");
+                 closeProfileImageModal();
+             } else {
+                 alert(data.message);
+             }
+         })
+         .catch(error => {
+             console.error("업로드 중 오류 발생:", error);
+             alert("업로드 중 오류가 발생했습니다.");
+         });
+     }
 
     // 🔹 비밀번호 수정 폼 보이기/숨기기
     function togglePasswordForm() {
