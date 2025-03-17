@@ -68,7 +68,7 @@
                         <td th:text="${notice.id}"></td>
                         <td><a th:href="@{/Boards/notice/detail/{id}(id=${notice.id})}" th:text="${notice.title}"></a></td>
                         <td th:text="${notice.nickname}"></td>
-                        <td th:text="${#dates.format(notice.creationDate, 'yyyy-MM-dd HH:mm')}"></td>
+                        <td th:text="${#temporals.format(notice.createdAt, 'yyyy-MM-dd HH:mm')}"></td>
                         <td th:text="${notice.hit}"></td>
                     </tr>
                     </tbody>

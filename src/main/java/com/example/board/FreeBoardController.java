@@ -27,7 +27,7 @@ public class FreeBoardController {
 
     @GetMapping("/freeBoard")
     public String showfreeBoard(Model model) {
-        model.addAttribute("posts", freeBoardService.getAllPosts());
+        model.addAttribute("boards", freeBoardService.getAllPosts());
         model.addAttribute("boardType", "freeBoard");
         return "/Boards/freeBoard";
     }
@@ -42,6 +42,7 @@ public class FreeBoardController {
         return "Boards/write";
     }
 
+    /*
     @PostMapping("/free/save")
     @PreAuthorize("isAuthenticated()")
     public String savePost(@RequestParam String title,
@@ -54,6 +55,7 @@ public class FreeBoardController {
 
         return "redirect:/Boards/freeBoard";
     }
+    */
 
     @GetMapping("/free/detail/{id}")
     public String detailPage(@PathVariable Long id, Model model) {

@@ -85,11 +85,9 @@ public class ReviewBoardController {
                 reviewBoardService.savePost(title, content, region, nickname, images);
                 break;
             case "freeBoard":
-                // 지역이 필요하지 않음
                 freeBoardService.savePost(title, content, nickname, images);
                 break;
             case "notice":
-                // 지역이 필요하지 않음
                 noticeService.savePost(title, content, nickname, images);
                 break;
             default:
@@ -97,12 +95,15 @@ public class ReviewBoardController {
         }
 
         try {
-            String encodedRegion = boardType.equals("reviewBoard") ?
-                    URLEncoder.encode(region, "UTF-8") : "전체";
-            return "redirect:/Boards/" + boardType + "?region=" + encodedRegion;
+            if ("reviewBoard".equals(boardType)) {
+                String encodedRegion = URLEncoder.encode(region, "UTF-8");
+                return "redirect:/Boards/reviewBoard?region=" + encodedRegion;
+            } else {
+                return "redirect:/Boards/" + boardType;
+            }
         } catch (UnsupportedEncodingException e) {
             e.printStackTrace();
-            return "redirect:/Boards/reviewBoard?region=전체";
+            return "redirect:/Boards/reviewBoard";
         }
     }
 

@@ -66,7 +66,7 @@
                         <td th:text="${board.id}"></td>
                         <td><a th:href="@{/Boards/freeBoard/detail/{id}(id=${board.id})}" th:text="${board.title}"></a></td>
                         <td th:text="${board.nickname}"></td>
-                        <td th:text="${#dates.format(board.creationDate, 'yyyy-MM-dd HH:mm')}"></td>
+                        <td th:text="${#temporals.format(board.createdAt, 'yyyy-MM-dd HH:mm')}"></td>
                         <td th:text="${board.hit}"></td>
                     </tr>
                     </tbody>

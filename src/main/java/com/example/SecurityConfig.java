@@ -28,7 +28,7 @@ public class SecurityConfig {
                                 "/static/**", "/css/**", "/js/**", "/images/**", "/main.css", "/uploads/**"
                         ).permitAll()
                         .requestMatchers(
-                                "/Boards/**"
+                                "/Boards/**", "/Boards/write"
                         ).permitAll()  // ✅ 게시판 접근 및 글 작성 허용
                         .requestMatchers(new AntPathRequestMatcher("/**")).permitAll()
                 )

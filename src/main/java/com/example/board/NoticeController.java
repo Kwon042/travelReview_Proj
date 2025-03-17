@@ -24,21 +24,21 @@ public class NoticeController {
     private CsrfTokenRepository csrfTokenRepository;
 
     @GetMapping("/notice")
-    public String showNoticeBoard(Model model) {
+    public String showNotice(Model model) {
         model.addAttribute("notices", noticeService.getAllNotices());
         model.addAttribute("boardType", "notice");
-        return "/Boards/noticeBoard"; // 공지사항 게시판 뷰 이름
+        return "/Boards/notice";
     }
 
     @GetMapping("/notice/write")
-    public String writeNotice(HttpServletRequest request, Model model) {
-        CsrfToken csrfToken = csrfTokenRepository.generateToken(request);
-        model.addAttribute("_csrf", csrfToken);
+    public String writeNotice(Model model) {
+        model.addAttribute("notices", noticeService.getAllNotices());
         model.addAttribute("boardType", "notice");
 
         return "Boards/write";
     }
 
+    /*
     @PostMapping("/notice/save")
     @PreAuthorize("isAuthenticated()")
     public String saveNotice(@RequestParam String title,
@@ -47,8 +47,9 @@ public class NoticeController {
                              @RequestParam(name = "image", required = false) List<MultipartFile> images) {
         noticeService.savePost(title, content, nickname, images);
 
-        return "redirect:/Boards/notice"; // 공지사항 리스트로 리다이렉트
+        return "redirect:/Boards/notice";
     }
+     */
 
     @GetMapping("/notice/detail/{id}")
     public String detailPage(@PathVariable Long id, Model model) {

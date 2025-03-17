@@ -28,6 +28,7 @@ public class Notice {
     @Column(name = "updated_at")
     private LocalDateTime updatedAt;
     private Long hit;
+
     @Column(name = "noticefile_img")
     private String noticeFileImg;
 
