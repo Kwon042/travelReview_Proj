@@ -18,14 +18,16 @@ public class Notice {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private String title; // 글제목
-    private String nickname; // 작성자 닉네임
-    private String content; // 내용
+    private String title;
+    private String nickname;
+    private String content;
+
+    @Column(name = "created_at")
+    private LocalDateTime createdAt;
 
     @Column(name = "updated_at")
-    private LocalDateTime updatedAt; // 수정일시
-    private Long hit; // 조회수
-
+    private LocalDateTime updatedAt;
+    private Long hit;
     @Column(name = "noticefile_img")
     private String noticeFileImg;
 

@@ -27,8 +27,11 @@ public class ReviewBoardController {
 
     private final ReviewBoardService reviewBoardService;
     private final ReviewBoardRepository reviewBoardRepository;
+    private final FreeBoardService freeBoardService;
+    private final NoticeService noticeService;
 
-    @GetMapping("/review/write")
+
+    @GetMapping("/write")
     public String write(@RequestParam(value = "region", required = false) String region,
                         @RequestParam(value = "boardType", required = true) String boardType,
                         HttpServletRequest request, Model model) {
@@ -72,15 +75,32 @@ public class ReviewBoardController {
     @PreAuthorize("isAuthenticated()")
     public String savePost(@RequestParam String title,
                            @RequestParam String content,
-                           @RequestParam(name = "region", required = true) String region,
+                           @RequestParam(name = "region", required = false) String region,
                            @RequestParam(name = "nickname") String nickname,
+                           @RequestParam(name = "boardType") String boardType,
                            @RequestParam(name = "image", required = false) List<MultipartFile> images) {
-        reviewBoardService.savePost(title, content, region, nickname, images);
+        switch (boardType) {
+            case "reviewBoard":
+                // 지역이 필요한 경우
+                reviewBoardService.savePost(title, content, region, nickname, images);
+                break;
+            case "freeBoard":
+                // 지역이 필요하지 않음
+                freeBoardService.savePost(title, content, nickname, images);
+                break;
+            case "notice":
+                // 지역이 필요하지 않음
+                noticeService.savePost(title, content, nickname, images);
+                break;
+            default:
+                throw new IllegalArgumentException("Invalid board type: " + boardType);
+        }
+
         try {
-            String encodedRegion = URLEncoder.encode(region, "UTF-8");
-            return "redirect:/Boards/reviewBoard?region=" + encodedRegion;
+            String encodedRegion = boardType.equals("reviewBoard") ?
+                    URLEncoder.encode(region, "UTF-8") : "전체";
+            return "redirect:/Boards/" + boardType + "?region=" + encodedRegion;
         } catch (UnsupportedEncodingException e) {
-            // 예외 처리 로직
             e.printStackTrace();
             return "redirect:/Boards/reviewBoard?region=전체";
         }

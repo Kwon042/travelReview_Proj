@@ -44,7 +44,7 @@
         <!-- 게시판 내용 -->
         <main class="col-md-9">
             <!-- 게시판 제목 -->
-            <h2 id="region-title" th:text="'전체 리뷰 게시판'"></h2>
+            <h2 id="region-title">전체 리뷰 게시판</h2>
             <div class="divider"></div>
             <hr style="border: 1px solid #5b30a4; margin: 20px 0;"> <!-- 구분선 추가 -->
 
@@ -73,12 +73,7 @@
                     </tr>
                     </tbody>
                 </table>
-                <a id="writeButton"
-                   th:if="${!isAllBoard}"
-                   th:href="@{${boardType == 'reviewBoard' ? '/Boards/write(region=${region}, boardType=${boardType})' : '/Boards/write(boardType=${boardType})'}}"
-                   class="btn btn-success write-button">
-                    글쓰기
-                </a>
+                <a id="writeButton" th:if="${!isAllBoard}" th:href="@{/Boards/write(region=${region}, boardType='reviewBoard')}" class="btn btn-success write-button">글쓰기</a>
             </div>
         </main>
     </div>

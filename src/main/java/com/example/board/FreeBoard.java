@@ -15,20 +15,20 @@ import java.time.LocalDateTime;
 public class FreeBoard {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id; // 번호
+    private Long id;
 
-    private String title; // 글제목
-    private String nickname; // 회원닉네임
-    private String content; // 내용
+    private String title;
+    private String nickname;
+    private String content;
 
     @Column(name = "created_at")
-    private LocalDateTime createdAt; // 생성일시
+    private LocalDateTime createdAt;
 
     @Column(name = "updated_at")
-    private LocalDateTime updatedAt; // 수정일시
+    private LocalDateTime updatedAt;
 
-    private Long hit; // 조회수
-    private Long voter; // 찜수
+    private Long hit;
+    private Long voter;
 
     @Column(name = "freefile_img")
     private String freeFileImg;

@@ -7,6 +7,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
 import java.io.IOException;
+import java.time.LocalDateTime;
 import java.util.List;
 
 @RequiredArgsConstructor
@@ -27,6 +28,9 @@ public class FreeBoardService {
         freeBoard.setTitle(title);
         freeBoard.setContent(content);
         freeBoard.setNickname(nickname);
+        freeBoard.setCreatedAt(LocalDateTime.now());
+        freeBoard.setUpdatedAt(LocalDateTime.now());
+
         freeBoardRepository.save(freeBoard);
 
         // 이미지가 있을 경우 처리
@@ -56,16 +60,30 @@ public class FreeBoardService {
     }
 
     private String saveBoardImage(Long postId, MultipartFile image) throws IOException {
-        // 이미지 저장 로직을 작성해야 합니다 (예: 파일 시스템이나 클라우드 저장소에 이미지 저장)
-        // 여기서는 예시로 간단하게 파일 경로만 반환하는 예시입니다.
-
         String fileName = postId + "_" + image.getOriginalFilename();
-        File file = new File("/path/to/images/" + fileName);
+
+        String uploadDir = "uploads/board_images/" + postId;
+
+        // 디렉토리가 존재하지 않으면 생성
+        File directory = new File(uploadDir);
+        if (!directory.exists()) {
+            directory.mkdirs(); // 디렉토리 생성
+        }
+
+        // 파일 경로 설정
+        File file = new File(directory, fileName);
+
+        // 파일 저장
         image.transferTo(file);
 
-        return "/images/" + fileName;
+        // 저장된 파일의 URL 또는 경로 반환 (웹에서 접근할 수 있는 경로로 반환)
+        return "/uploads/board_images/" + postId + "/" + fileName;
     }
 
+    public FreeBoard getPostId(Long id) {
+
+        return freeBoardRepository.findById(id).orElse(null);
+    }
 
 
 }
