@@ -82,13 +82,13 @@ public class ReviewBoardController {
         switch (boardType) {
             case "reviewBoard":
                 // 지역이 필요한 경우
-                reviewBoardService.savePost(title, content, region, nickname, images);
+                reviewBoardService.savePost(title, content, region, nickname, boardType, images);
                 break;
             case "freeBoard":
-                freeBoardService.savePost(title, content, nickname, images);
+                freeBoardService.savePost(title, content, nickname, boardType, images);
                 break;
             case "notice":
-                noticeService.savePost(title, content, nickname, images);
+                noticeService.savePost(title, content, nickname, boardType, images);
                 break;
             default:
                 throw new IllegalArgumentException("Invalid board type: " + boardType);
@@ -107,16 +107,47 @@ public class ReviewBoardController {
         }
     }
 
-    @GetMapping("/detail/{id}")
-    public String detailPage(@PathVariable Long id, @RequestParam String region, Model model) {
-        ReviewBoard post = reviewBoardService.getPostId(id);
+    @GetMapping("/detail/{boardType}/{id}")
+    public String detailPage(@PathVariable("boardType") String boardType,
+                             @PathVariable("id") Long id,
+                             @RequestParam(required = false) String region,
+                             Model model) {
+        if (boardType == null || boardType.isEmpty()) {
+            throw new IllegalArgumentException("Board type cannot be null or empty.");
+        }
+        System.out.println("Board Type: " + boardType + ", Post ID: " + id);
 
+        Object post = null;
+
+        // boardType이 reviewBoard일 경우에만 region을 사용
+        if ("reviewBoard".equals(boardType) && region != null) {
+            System.out.println("Region: " + region);
+            model.addAttribute("region", region);
+        }
+
+        switch (boardType) {
+            case "reviewBoard":
+                post = reviewBoardService.getPostId(id);
+                if (region != null) {
+                    model.addAttribute("region", region);
+                }
+                break;
+            case "freeBoard":
+                post = freeBoardService.getPostId(id);
+                break;
+            case "notice":
+                post = noticeService.getPostId(id);
+                break;
+            default:
+                throw new IllegalArgumentException("Invalid board type: " + boardType);
+        }
+
+        model.addAttribute("boardType", boardType);
         model.addAttribute("post", post);
-        model.addAttribute("region", region);
 
-        // "Boards/detail" 뷰를 반환
         return "Boards/detail";
     }
+
 
 
 }

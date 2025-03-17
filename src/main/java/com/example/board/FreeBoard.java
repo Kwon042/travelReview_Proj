@@ -35,5 +35,7 @@ public class FreeBoard {
 
     private String freeFileImgs; // 여러 이미지 경로를 저장할 필드
 
+    private String boardType;
+
 
 }

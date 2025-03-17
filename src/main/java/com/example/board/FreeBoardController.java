@@ -42,27 +42,12 @@ public class FreeBoardController {
         return "Boards/write";
     }
 
-    /*
-    @PostMapping("/free/save")
-    @PreAuthorize("isAuthenticated()")
-    public String savePost(@RequestParam String title,
-                           @RequestParam String content,
-                           @RequestParam(name = "nickname") String nickname,
-                           @RequestParam(name = "image", required = false) List<MultipartFile> images) {
-        freeBoardService.savePost(title, content, nickname, images);
-        System.out.println("Redirecting to /Boards/freeBoard"); // Adding log statement
-
-
-        return "redirect:/Boards/freeBoard";
-    }
-    */
-
-    @GetMapping("/free/detail/{id}")
-    public String detailPage(@PathVariable Long id, Model model) {
-        FreeBoard post = freeBoardService.getPostId(id);
-
-        model.addAttribute("post", post);
-
-        return "Boards/detail";
-    }
+//    @GetMapping("/free/detail/{id}")
+//    public String detailPage(@PathVariable("id") Long id, Model model) {
+//        FreeBoard board = freeBoardService.getPostId(id);
+//
+//        model.addAttribute("board", board);
+//
+//        return "Boards/detail";
+//    }
 }

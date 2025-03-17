@@ -51,12 +51,12 @@ public class NoticeController {
     }
      */
 
-    @GetMapping("/notice/detail/{id}")
-    public String detailPage(@PathVariable Long id, Model model) {
-        Notice post = noticeService.getPostId(id);
-
-        model.addAttribute("post", post);
-
-        return "Boards/detail";
-    }
+//    @GetMapping("/notice/detail/{id}")
+//    public String detailPage(@PathVariable Long id, Model model) {
+//        Notice post = noticeService.getPostId(id);
+//
+//        model.addAttribute("post", post);
+//
+//        return "Boards/detail";
+//    }
 }

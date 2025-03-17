@@ -21,6 +21,7 @@ public class Notice {
     private String title;
     private String nickname;
     private String content;
+    private String boardType;
 
     @Column(name = "created_at")
     private LocalDateTime createdAt;

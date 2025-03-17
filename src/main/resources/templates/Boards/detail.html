@@ -38,13 +38,13 @@
 
     <!-- 게시글 상세 내용 -->
     <main class="col-md-9">
-      <h2 id="region-title" th:text="${post.region != null ? post.region + ' 상세 게시판' : '기본 상세 게시판'}"></h2>
+      <h2 id="region-title" th:text="${boardType == 'freeBoard' ? '자유게시판' : (boardType == 'notice' ? '공지사항' : '기본 상세 게시판')}"></h2>
       <div class="divider"></div>
       <hr style="border: 1px solid #5b30a4; margin: 20px 0;"> <!-- 구분선 추가 -->
 
       <div class="post-detail">
         <p class="post-meta"><strong>작성자:</strong> <span th:text="${post.nickname}"></span></p>
-        <p class="post-meta"><strong>지역:</strong> <span th:text="${post.region}"></span></p>
+        <p class="post-meta" th:if="${post.region != null}"><strong>지역:</strong> <span th:text="${post.region}"></span></p>
         <p class="post-content" th:text="${post.content}"></p>
 
         <div class="post-image">
@@ -52,7 +52,7 @@
         </div>
       </div>
 
-      <a href="/Boards/reviewBoard" class="btn btn-primary back-button">목록으로 돌아가기</a>
+      <a href="/Boards/{boardType}" class="btn btn-primary back-button">목록으로 돌아가기</a>
     </main>
   </div>
 </div>
@@ -65,9 +65,10 @@
       const urlParams = new URLSearchParams(window.location.search);
       const region = urlParams.get('region') || "전체"; // 기본값: '전체'
 
-      document.getElementById('region-title').textContent = `${region} 게시판`;
+      document.getElementById('region-title').textContent = ${region} 게시판;
   });
 </script>
+
 
 </body>
 </html>

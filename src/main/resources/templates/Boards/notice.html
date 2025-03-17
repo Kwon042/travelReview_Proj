@@ -58,7 +58,7 @@
                         <th>게시글 번호</th>
                         <th>제목</th>
                         <th>작성자</th>
-                        <th>생성일시</th>
+                        <th>작성일</th>
                         <th>조회수</th>
                     </tr>
                     </thead>
@@ -66,7 +66,9 @@
                     <!-- Thymeleaf를 사용하여 서버에서 넘긴 게시판 내용 출력 -->
                     <tr th:each="notice : ${notices}">
                         <td th:text="${notice.id}"></td>
-                        <td><a th:href="@{/Boards/notice/detail/{id}(id=${notice.id})}" th:text="${notice.title}"></a></td>
+                        <td>
+                            <a th:href="@{'/Boards/detail/' + ${boardType} + '/' + ${notice.id} + '?region=' + ${board.region}}" th:text="${notice.title}"></a>
+                        </td>
                         <td th:text="${notice.nickname}"></td>
                         <td th:text="${#temporals.format(notice.createdAt, 'yyyy-MM-dd HH:mm')}"></td>
                         <td th:text="${notice.hit}"></td>

@@ -66,7 +66,9 @@
                     <tr th:each="board : ${boards}">
                         <td th:text="${board.id}"></td>
                         <td th:text="${board.region}"></td>
-                        <td><a th:href="@{'/Boards/detail/' + ${board.id} + '?region=' + ${board.region}}" th:text="${board.title}"></a></td>
+                        <td>
+                            <a th:href="@{'/Boards/detail/' + ${boardType} + '/' + ${board.id} + '?region=' + ${board.region}}" th:text="${board.title}"></a>
+                        </td>
                         <td th:text="${board.nickname}"></td>
                         <td th:text="${#temporals.format(board.createdAt, 'yyyy-MM-dd HH:mm')}"></td>
                         <td th:text="${board.hit}"></td>

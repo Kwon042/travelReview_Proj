@@ -64,10 +64,10 @@ public class ReviewBoardService {
     }
 
     @Transactional
-    public void savePost(String title, String content, String region, String nickname, List<MultipartFile> images) {
+    public void savePost(String title, String content, String region, String nickname, String boardType, List<MultipartFile> images) {
 
-        saveToAllBoards(title, content, region, nickname);
-        saveToRegionalBoard(title, content, region, nickname);
+        saveToAllBoards(title, content, region, nickname, boardType);
+        saveToRegionalBoard(title, content, region, nickname, boardType);
         // 지역 게시판의 글을 찾아서 이미지 저장
         Optional<ReviewBoard> regionalPost = reviewBoardRepository.findByRegionAndTitle(region, title);
 
@@ -95,7 +95,7 @@ public class ReviewBoardService {
         }
     }
 
-    void saveToAllBoards(String title, String content, String region, String nickname) {
+    void saveToAllBoards(String title, String content, String region, String nickname, String boardType) {
         // "전체" 게시판에 동일한 제목과 내용의 글이 있는지 확인
         Optional<ReviewBoard> existingPost = reviewBoardRepository.findByRegionAndTitle("전체", title);
 
@@ -106,6 +106,7 @@ public class ReviewBoardService {
             allBoardPost.setContent(content);
             allBoardPost.setRegion("전체");
             allBoardPost.setNickname(nickname);
+            allBoardPost.setBoardType(boardType);
             allBoardPost.setHit(0L);
             allBoardPost.setVoter(0L);
             allBoardPost.setCreatedAt(LocalDateTime.now());
@@ -115,13 +116,14 @@ public class ReviewBoardService {
         }
     }
 
-    void saveToRegionalBoard(String title, String content, String region, String nickname) {
+    void saveToRegionalBoard(String title, String content, String region, String nickname, String boardType) {
         ReviewBoard regionalPost = new ReviewBoard();
 
         regionalPost.setTitle(title);
         regionalPost.setContent(content);
         regionalPost.setRegion(region);
         regionalPost.setNickname(nickname);
+        regionalPost.setBoardType(boardType);
         regionalPost.setHit(0L);
         regionalPost.setVoter(0L);
         regionalPost.setCreatedAt(LocalDateTime.now());

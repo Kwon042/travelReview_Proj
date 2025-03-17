@@ -21,7 +21,7 @@ public class ReviewBoard {
     private String title;
     private String nickname;
     private String content;
-
+    private String boardType;
     private String region;
 
     // 객체가 처음 저장할 때만 값을 설정하도록, 이후에는 수정하지 않기 위해 false
@@ -67,4 +67,7 @@ public class ReviewBoard {
     public Long getId() {
         return id;
     }
+
+
+
 }

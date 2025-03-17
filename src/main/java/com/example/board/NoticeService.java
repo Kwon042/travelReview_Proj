@@ -21,12 +21,13 @@ public class NoticeService {
     }
 
     @Transactional
-    public void savePost(String title, String content, String nickname, List<MultipartFile> images) {
+    public void savePost(String title, String content, String nickname, String boardType, List<MultipartFile> images) {
 
         Notice notice = new Notice();
         notice.setTitle(title);
         notice.setContent(content);
         notice.setNickname(nickname);
+        notice.setBoardType(boardType);
         notice.setCreatedAt(LocalDateTime.now());
         notice.setUpdatedAt(LocalDateTime.now());
 

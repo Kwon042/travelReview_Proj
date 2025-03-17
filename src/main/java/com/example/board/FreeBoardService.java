@@ -22,7 +22,7 @@ public class FreeBoardService {
     }
 
     @Transactional
-    public void savePost(String title, String content, String nickname, List<MultipartFile> images) {
+    public void savePost(String title, String content, String nickname, String boardType, List<MultipartFile> images) {
 
         FreeBoard freeBoard = new FreeBoard();
         freeBoard.setTitle(title);
@@ -30,6 +30,7 @@ public class FreeBoardService {
         freeBoard.setNickname(nickname);
         freeBoard.setCreatedAt(LocalDateTime.now());
         freeBoard.setUpdatedAt(LocalDateTime.now());
+        freeBoard.setBoardType(boardType);
 
         freeBoardRepository.save(freeBoard);
 
