@@ -30,7 +30,10 @@ public class FreeBoard {
     private Long hit; // 조회수
     private Long voter; // 찜수
 
-    private String freeFileImgs;
+    @Column(name = "freefile_img")
+    private String freeFileImg;
+
+    private String freeFileImgs; // 여러 이미지 경로를 저장할 필드
 
 
 }

@@ -70,7 +70,7 @@
                     </tr>
                     </tbody>
                 </table>
-                <a th:href="@{${boardType == 'reviewBoard' ? '/Boards/write?region=' + ${region} + '&boardType=' + ${boardType} : '/Boards/write?boardType=' + ${boardType}}}"
+                <a th:href="@{(boardType == 'reviewBoard') ? '/Boards/write?region=' + region + '&boardType=' + boardType : '/Boards/write?boardType=' + boardType}"
                    class="btn btn-success write-button">글쓰기</a>
             </div>
         </main>

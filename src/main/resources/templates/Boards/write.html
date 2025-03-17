@@ -18,9 +18,8 @@
 
   <form th:action="@{/Boards/save}" method="post" accept-charset="UTF-8" enctype="multipart/form-data">
     <input type="hidden" name="_csrf" th:value="${_csrf.token}"/>
-
     <!-- 지역 값을 숨겨진 필드로 포함 -->
-    <input type="hidden" name="region" th:value="${region}"/>
+    <input type="hidden" name="region" th:if="${region != null}" th:value="${region}"/>
 
     <input type="hidden" name="nickname" th:value="${#authentication.name}"/>
     <div class="mb-3">
@@ -33,7 +32,11 @@
     </div>
     <div class="mb-3">
       <label for="image" class="form-label">사진 업로드</label>
-      <input type="file" class="form-control" id="image" name="reviewFileImg" accept="image/*" multiple onchange="previewImages(event)">
+      <input type="file" class="form-control" id="image"
+             th:name="${boardType == 'reviewBoard' ? 'reviewFileImg'
+                   : boardType == 'freeBoard' ? 'freeFileImg'
+                   : boardType == 'notice' ? 'noticeFileImg' : null}"
+             accept="image/*" multiple onchange="previewImages(event)">
     </div>
     <div id="imagePreview" class="mb-3 d-flex flex-wrap"></div>
     <button type="submit" class="btn btn-primary">저장</button>

@@ -8,8 +8,13 @@ import org.springframework.security.web.csrf.CsrfTokenRepository;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.multipart.MultipartFile;
+
+import java.security.Principal;
+import java.util.List;
 
 
 @RequiredArgsConstructor
@@ -29,19 +34,27 @@ public class FreeBoardController {
         return "/Boards/freeBoard";
     }
 
-    @GetMapping("/write")
-    public String write(@RequestParam(value = "region", required = false) String region,
-                        @RequestParam(value = "boardType", required = true) String boardType,
+    @GetMapping("/free/write")
+    public String writeNoticeFree(@RequestParam(value = "boardType", required = true) String boardType,
                         HttpServletRequest request, Model model) {
         CsrfToken csrfToken = csrfTokenRepository.generateToken(request);
         model.addAttribute("_csrf", csrfToken);
         model.addAttribute("boardType", boardType);
 
-        // freeBoard에 맞는 데이터 처리
-        model.addAttribute("region", region);
-
-        return "Boards/write";  // 공통 템플릿 반환
+        return "Boards/write";
     }
+
+    @PostMapping("/free/save")
+    public String savePost(@RequestParam String title,
+                           @RequestParam String content,
+                           @RequestParam(name = "nickname") String nickname,
+                           @RequestParam(name = "image", required = false) List<MultipartFile> images) {
+        freeBoardService.savePost(title, content, nickname, images);
+
+        return "redirect:/Boards/freeBoard";
+    }
+
+
 
 
 

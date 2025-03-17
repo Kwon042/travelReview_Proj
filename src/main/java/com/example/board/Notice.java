@@ -26,5 +26,10 @@ public class Notice {
     private LocalDateTime updatedAt; // 수정일시
     private Long hit; // 조회수
 
+    @Column(name = "noticefile_img")
+    private String noticeFileImg;
+
+    private String noticeFileImgs; // 여러 이미지 경로를 저장할 필드
+
 
 }

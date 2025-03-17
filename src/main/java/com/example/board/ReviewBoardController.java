@@ -1,5 +1,6 @@
 package com.example.board;
 
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.Value;
@@ -10,7 +11,6 @@ import org.springframework.security.web.csrf.CsrfTokenRepository;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
-import jakarta.servlet.http.HttpServletRequest; // Jakarta Servlet을 사용하는 경우
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.UnsupportedEncodingException;
@@ -28,7 +28,7 @@ public class ReviewBoardController {
     private final ReviewBoardService reviewBoardService;
     private final ReviewBoardRepository reviewBoardRepository;
 
-    @GetMapping("/write")
+    @GetMapping("/review/write")
     public String write(@RequestParam(value = "region", required = false) String region,
                         @RequestParam(value = "boardType", required = true) String boardType,
                         HttpServletRequest request, Model model) {

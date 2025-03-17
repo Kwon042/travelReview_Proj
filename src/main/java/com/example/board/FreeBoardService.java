@@ -55,7 +55,6 @@ public class FreeBoardService {
         }
     }
 
-    // 이미지 저장 처리 메서드
     private String saveBoardImage(Long postId, MultipartFile image) throws IOException {
         // 이미지 저장 로직을 작성해야 합니다 (예: 파일 시스템이나 클라우드 저장소에 이미지 저장)
         // 여기서는 예시로 간단하게 파일 경로만 반환하는 예시입니다.
@@ -64,7 +63,9 @@ public class FreeBoardService {
         File file = new File("/path/to/images/" + fileName);
         image.transferTo(file);
 
-        return "/images/" + fileName;  // 저장된 이미지 경로 반환
+        return "/images/" + fileName;
     }
+
+
 
 }

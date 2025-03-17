@@ -30,9 +30,10 @@ dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-thymeleaf'
 	implementation 'org.springframework.boot:spring-boot-starter-web'
 
-	// Spring Security 관련 의존성 추가
-	implementation 'org.springframework.security:spring-security-web'
-	implementation 'org.springframework.security:spring-security-config'
+	implementation 'org.springframework.security:spring-security-web:6.3.5'
+	implementation 'org.springframework.security:spring-security-config:6.3.5'
+	implementation 'jakarta.servlet:jakarta.servlet-api:6.0.0'
+
 
 	// 나머지 의존성들
 	developmentOnly 'org.springframework.boot:spring-boot-devtools'
