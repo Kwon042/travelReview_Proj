@@ -36,7 +36,7 @@ public class FreeBoardController {
 
     @GetMapping("/free/write")
     public String writeNoticeFree(@RequestParam(value = "boardType", required = true) String boardType,
-                        HttpServletRequest request, Model model) {
+                                  HttpServletRequest request, Model model) {
         CsrfToken csrfToken = csrfTokenRepository.generateToken(request);
         model.addAttribute("_csrf", csrfToken);
         model.addAttribute("boardType", boardType);
@@ -53,9 +53,4 @@ public class FreeBoardController {
 
         return "redirect:/Boards/freeBoard";
     }
-
-
-
-
-
 }
