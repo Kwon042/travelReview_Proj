@@ -67,7 +67,7 @@
                     <tr th:each="notice : ${notices}">
                         <td th:text="${notice.id}"></td>
                         <td>
-                            <a th:href="@{'/Boards/detail/' + ${boardType} + '/' + ${notice.id} + '?region=' + ${board.region}}" th:text="${notice.title}"></a>
+                            <a th:href="@{/Boards/detail/{boardType}/{id}(boardType=${boardType}, id=${notice.id})}" th:text="${notice  .title}"></a>
                         </td>
                         <td th:text="${notice.nickname}"></td>
                         <td th:text="${#temporals.format(notice.createdAt, 'yyyy-MM-dd HH:mm')}"></td>
