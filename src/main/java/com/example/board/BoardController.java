@@ -225,8 +225,9 @@ public class BoardController {
     public ResponseEntity<?> deletePost(@PathVariable String boardType,
                                         @PathVariable Long id,
                                         @AuthenticationPrincipal SiteUser currentUser) {
+        System.out.println("deletePost method is called");
+
         Object post;
-        System.out.println("Received boardType: " + boardType); // 디버깅용 로그
 
         switch (boardType) {
             case "reviewBoard":
@@ -238,6 +239,8 @@ public class BoardController {
                 break;
             case "freeBoard":
                 FreeBoard freePost = freeBoardService.getPostId(id);
+                System.out.println("Post username: " + freePost.getUsername());
+                System.out.println("Current user username: " + currentUser.getUsername());
                 if (freePost.getUsername().equals(currentUser.getUsername())) {
                     freeBoardService.deletePost(id);
                     return ResponseEntity.ok().body("Post deleted successfully");

@@ -58,7 +58,7 @@
         <form th:action="@{/Boards/{boardType}/edit/{id}(boardType=${boardType}, id=${post.id})}" method="get" th:if="${post.username != null and post.username == currentUsername}" style="display: inline;">
           <button type="submit" class="btn btn-secondary">수정</button>
         </form>
-        <button onclick="deletePost('[[${boardType}]]', /*[[${post.id}]]*/ 0)" class="btn btn-danger"
+        <button onclick="deletePost('${boardType}', '${post.id}')" class="btn btn-danger"
                 sec:authorize="isAuthenticated()"
                 th:if="${post.username != null and post.username == currentUsername}">
           삭제
@@ -75,20 +75,18 @@
 
 <script>
   document.addEventListener('DOMContentLoaded', function() {
-      // 지역게시판 (reviewBoard)
+
       const regionTitleElement = document.getElementById('region-title');
       if (regionTitleElement) {
           let region = '지역 이름'; 
           regionTitleElement.textContent = `${region} 지역게시판`;
       }
 
-      // 자유게시판 (freeBoard)
       const freeBoardTitleElement = document.getElementById('free-board-title');
       if (freeBoardTitleElement) {
           freeBoardTitleElement.textContent = '자유게시판';
       }
 
-      // 공지사항 (notice)
       const noticeTitleElement = document.getElementById('notice-title');
       if (noticeTitleElement) {
           noticeTitleElement.textContent = '공지사항';
@@ -96,8 +94,8 @@
   });
 
   function deletePost(boardType, postId) {
-    console.log("Board Type:", boardType); // 디버깅용 로그
-    console.log("Post ID:", postId); // 디버깅용 로그
+    console.log("Board Type:", boardType);
+    console.log("Post ID:", postId);
     if (confirm("정말로 이 게시물을 삭제하시겠습니까?")) {
         fetch(`/Boards/${boardType}/delete/${postId}`, {
             method: 'DELETE',
@@ -115,7 +113,7 @@
         })
         .catch(error => console.error('Error:', error));
     }
-}
+  }
 </script>
 
 
