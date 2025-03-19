@@ -59,7 +59,6 @@
         <!-- 지역 값을 숨겨진 필드로 포함 -->
         <input type="hidden" name="region" th:if="${region != null}" th:value="${region}"/>
         <input type="hidden" name="boardType" th:value="${boardType}"/>
-
         <input type="hidden" name="nickname" th:value="${#authentication.name}"/>
         <div class="mb-3">
           <label for="title" class="form-label">제목</label>

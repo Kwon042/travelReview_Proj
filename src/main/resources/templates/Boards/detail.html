@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="ko" xmlns:th="http://www.w3.org/1999/xhtml">
+<html lang="ko" xmlns:th="http://www.w3.org/1999/xhtml" xmlns:sec="http://www.w3.org/1999/xhtml">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -38,7 +38,7 @@
 
     <!-- 게시글 상세 내용 -->
     <main class="col-md-9">
-      <h2 id="region-title" th:text="${boardType == 'freeBoard' ? '자유게시판' : (boardType == 'notice' ? '공지사항' : '기본 상세 게시판')}"></h2>
+      <h2 th:text="${boardType == 'freeBoard' ? '자유게시판' : (boardType == 'notice' ? '공지사항' : '기본 상세 게시판')}"></h2>
       <div class="divider"></div>
       <hr style="border: 1px solid #5b30a4; margin: 20px 0;"> <!-- 구분선 추가 -->
 
@@ -54,6 +54,16 @@
           <span th:if="${post.imageName == null}">이미지가 없습니다.</span>
         </div>
       </div>
+      <div class="action-buttons my-3">
+        <form th:action="@{/Boards/{boardType}/edit/{id}(boardType=${boardType}, id=${post.id})}" method="post" th:if="${post.username != null and post.username == currentUsername}" style="display: inline;">
+          <button type="submit" class="btn btn-secondary">수정</button>
+        </form>
+        <button onclick="deletePost('[[${boardType}]]', /*[[${post.id}]]*/ 0)" class="btn btn-danger"
+                sec:authorize="isAuthenticated()"
+                th:if="${post.username != null and post.username == currentUsername}">
+          삭제
+        </button>
+      </div>
       <a th:href="@{${boardType == 'reviewBoard' ? '/Boards/reviewBoard' + (region != null ? '?region=' + region : '') : '/Boards/' + boardType}}"
          class="btn btn-primary back-button">목록으로 돌아가기</a>
     </main>
@@ -65,22 +75,47 @@
 
 <script>
   document.addEventListener('DOMContentLoaded', function() {
+      // 지역게시판 (reviewBoard)
       const regionTitleElement = document.getElementById('region-title');
       if (regionTitleElement) {
           let region = '지역 이름'; 
           regionTitleElement.textContent = `${region} 지역게시판`;
       }
 
+      // 자유게시판 (freeBoard)
       const freeBoardTitleElement = document.getElementById('free-board-title');
       if (freeBoardTitleElement) {
           freeBoardTitleElement.textContent = '자유게시판';
       }
 
+      // 공지사항 (notice)
       const noticeTitleElement = document.getElementById('notice-title');
       if (noticeTitleElement) {
           noticeTitleElement.textContent = '공지사항';
       }
   });
+
+  function deletePost(boardType, postId) {
+    console.log("Board Type:", boardType); // 디버깅용 로그
+    console.log("Post ID:", postId); // 디버깅용 로그
+    if (confirm("정말로 이 게시물을 삭제하시겠습니까?")) {
+        fetch(`/Boards/${boardType}/delete/${postId}`, {
+            method: 'DELETE',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+        })
+        .then(response => {
+            if (response.ok) {
+                alert("게시물이 삭제되었습니다.");
+                window.location.reload();
+            } else {
+                alert("삭제 실패: 권한이 없습니다.");
+            }
+        })
+        .catch(error => console.error('Error:', error));
+    }
+}
 </script>
 
 

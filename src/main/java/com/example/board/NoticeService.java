@@ -28,11 +28,12 @@ public class NoticeService {
     }
 
     @Transactional
-    public void savePost(String title, String content, String nickname, String boardType, List<MultipartFile> images) {
+    public void savePost(String title, String content, String username, String nickname, String boardType, List<MultipartFile> images) {
 
         Notice notice = new Notice();
         notice.setTitle(title);
         notice.setContent(content);
+        notice.setUsername(username);
         notice.setNickname(nickname);
         notice.setBoardType(boardType);
         notice.setCreatedAt(LocalDateTime.now());
@@ -100,4 +101,7 @@ public class NoticeService {
     }
 
 
+    public void deletePost(Long id) {
+        noticeRepository.deleteById(id);
+    }
 }

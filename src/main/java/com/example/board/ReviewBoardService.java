@@ -16,8 +16,6 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
-import static groovyjarjarantlr4.v4.gui.GraphicsSupport.saveImage;
-
 @RequiredArgsConstructor
 @Service
 public class ReviewBoardService {
@@ -59,10 +57,10 @@ public class ReviewBoardService {
     }
 
     @Transactional
-    public void savePost(String title, String content, String region, String nickname, String boardType, List<MultipartFile> images) {
+    public void savePost(String title, String content, String region, String username, String nickname, String boardType, List<MultipartFile> images) {
 
-        saveToAllBoards(title, content, region, nickname, boardType);
-        saveToRegionalBoard(title, content, region, nickname, boardType);
+        saveToAllBoards(title, content, region, username, nickname, boardType);
+        saveToRegionalBoard(title, content, region, username, nickname, boardType);
         // 지역 게시판의 글을 찾아서 이미지 저장
         Optional<ReviewBoard> regionalPost = reviewBoardRepository.findByRegionAndTitle(region, title);
 
@@ -90,7 +88,7 @@ public class ReviewBoardService {
         }
     }
 
-    void saveToAllBoards(String title, String content, String region, String nickname, String boardType) {
+    void saveToAllBoards(String title, String content, String region, String username, String nickname, String boardType) {
         // "전체" 게시판에 동일한 제목과 내용의 글이 있는지 확인
         Optional<ReviewBoard> existingPost = reviewBoardRepository.findByRegionAndTitle("전체", title);
 
@@ -100,6 +98,7 @@ public class ReviewBoardService {
             allBoardPost.setTitle(title);
             allBoardPost.setContent(content);
             allBoardPost.setRegion("전체");
+            allBoardPost.setUsername(username);
             allBoardPost.setNickname(nickname);
             allBoardPost.setBoardType(boardType);
             allBoardPost.setHit(0L);
@@ -107,22 +106,25 @@ public class ReviewBoardService {
             allBoardPost.setCreatedAt(LocalDateTime.now());
             allBoardPost.setUpdatedAt(LocalDateTime.now());
 
+
             this.reviewBoardRepository.save(allBoardPost);
         }
     }
 
-    void saveToRegionalBoard(String title, String content, String region, String nickname, String boardType) {
+    void saveToRegionalBoard(String title, String content, String region, String username, String nickname, String boardType) {
         ReviewBoard regionalPost = new ReviewBoard();
 
         regionalPost.setTitle(title);
         regionalPost.setContent(content);
         regionalPost.setRegion(region);
+        regionalPost.setUsername(username);
         regionalPost.setNickname(nickname);
         regionalPost.setBoardType(boardType);
         regionalPost.setHit(0L);
         regionalPost.setVoter(0L);
         regionalPost.setCreatedAt(LocalDateTime.now());
         regionalPost.setUpdatedAt(LocalDateTime.now());
+        regionalPost.setUsername(regionalPost.getUsername());
 
         this.reviewBoardRepository.save(regionalPost);
     }
@@ -138,5 +140,9 @@ public class ReviewBoardService {
 
     public List<ReviewBoard> getAllBoards() {
         return reviewBoardRepository.findAll();
+    }
+
+    public void deletePost(Long id) {
+        reviewBoardRepository.deleteById(id);
     }
 }

@@ -5,7 +5,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -30,10 +29,11 @@ public class FreeBoardService {
 
 
     @Transactional
-    public void savePost(String title, String content, String nickname, String boardType, List<MultipartFile> images) {
+    public void savePost(String title, String content, String username, String nickname, String boardType, List<MultipartFile> images) {
         FreeBoard freeBoard = new FreeBoard();
         freeBoard.setTitle(title);
         freeBoard.setContent(content);
+        freeBoard.setUsername(username);
         freeBoard.setNickname(nickname);
         freeBoard.setBoardType(boardType);
         freeBoard.setCreatedAt(LocalDateTime.now());
@@ -97,4 +97,7 @@ public class FreeBoardService {
     }
 
 
+    public void deletePost(Long id) {
+        freeBoardRepository.deleteById(id);
+    }
 }

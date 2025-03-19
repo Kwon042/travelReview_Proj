@@ -17,12 +17,15 @@ public class ReviewBoard {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+    private String username;
 
     private String title;
     private String nickname;
     private String content;
     private String boardType;
     private String region;
+    // 원본
+    private Long originalPostId;
 
     // 객체가 처음 저장할 때만 값을 설정하도록, 이후에는 수정하지 않기 위해 false
     @Column(name = "created_at",updatable = false)
@@ -64,10 +67,7 @@ public class ReviewBoard {
         return reviewFileImg;
     }
 
-    public Long getId() {
-
-        return id;
-    }
+    public Long getId() { return id; }
 
 
 
