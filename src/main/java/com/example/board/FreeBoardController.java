@@ -42,12 +42,4 @@ public class FreeBoardController {
         return "Boards/write";
     }
 
-//    @GetMapping("/free/detail/{id}")
-//    public String detailPage(@PathVariable("id") Long id, Model model) {
-//        FreeBoard board = freeBoardService.getPostId(id);
-//
-//        model.addAttribute("board", board);
-//
-//        return "Boards/detail";
-//    }
 }

@@ -21,7 +21,7 @@ public class UserService {
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
 
-    private final Path uploadPath = Paths.get(System.getProperty("user.dir"), "uploads");
+    private final Path profileImagePath = Paths.get(System.getProperty("user.dir"), "uploads/profile_images");
     private static final long MAX_FILE_SIZE = 5 * 1024 * 1024; // 5MB (5 * 1024 * 1024 바이트)
 
     @Transactional
@@ -91,36 +91,43 @@ public class UserService {
     }
 
     public String uploadProfileImage(Long userId, MultipartFile file) throws IOException {
-        SiteUser user = userRepository.findById(userId).orElseThrow(() ->
-                new IllegalArgumentException("사용자를 찾을 수 없습니다."));
+        try {
+            SiteUser user = userRepository.findById(userId).orElseThrow(() ->
+                    new IllegalArgumentException("사용자를 찾을 수 없습니다."));
 
-        String originalFilename = file.getOriginalFilename();
-        if (originalFilename == null) {
-            throw new IllegalArgumentException("파일 이름이 유효하지 않습니다.");
+            String originalFilename = file.getOriginalFilename();
+            if (originalFilename == null || originalFilename.isEmpty()) {
+                throw new IllegalArgumentException("파일 이름이 유효하지 않습니다.");
+            }
+
+            if (file.getSize() > MAX_FILE_SIZE) {
+                throw new IllegalArgumentException("파일 크기가 너무 큽니다.");
+            }
+
+            // 프로필 이미지 업로드 디렉토리 확인 및 생성
+            Path profileImagePath = Paths.get(System.getProperty("user.dir"), "uploads/profile_images/" + userId);
+            if (!Files.exists(profileImagePath)) {
+                try {
+                    Files.createDirectories(profileImagePath);
+                } catch (IOException e) {
+                    throw new RuntimeException("업로드 디렉토리 생성 오류: " + e.getMessage());
+                }
+            }
+
+            String fileName = System.currentTimeMillis() + "_" + originalFilename;
+            Path imageFilePath = profileImagePath.resolve(fileName);
+            file.transferTo(imageFilePath.toFile());
+
+            // 이미지 URL을 사용자에게 저장
+            String imageUrl = "/uploads/profile_images/" + userId + "/" + fileName;
+            user.setProfileImageUrl(imageUrl);
+            userRepository.save(user);
+
+            return imageUrl;
+        } catch (Exception e) {
+            System.err.println("오류 발생: " + e.getMessage());
+            throw new RuntimeException("프로필 이미지 업로드 중 오류가 발생했습니다: " + e.getMessage());
         }
-
-        if (file.getSize() > MAX_FILE_SIZE) {
-            throw new IllegalArgumentException("파일 크기가 너무 큽니다. 최대 " + (MAX_FILE_SIZE / (1024 * 1024)) + "MB 이하로 업로드 해주세요.");
-        }
-
-        // 업로드 디렉토리 확인 및 생성
-        if (!Files.exists(uploadPath)) {
-            Files.createDirectories(uploadPath);
-        }
-
-        String fileName = System.currentTimeMillis() + "_" + originalFilename;
-        // 파일 경로
-        Path imageFile = uploadPath.resolve(fileName);
-
-        // 파일 저장
-        file.transferTo(imageFile.toFile());
-
-        // URL 설정
-        String imageUrl = "/uploads/" + fileName;
-        user.setProfileImageUrl(imageUrl);
-        userRepository.save(user);
-
-        return imageUrl;
     }
 
 

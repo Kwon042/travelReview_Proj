@@ -20,6 +20,8 @@ public class FreeBoard {
     private String title;
     private String nickname;
     private String content;
+    private String imageName;
+
 
     @Column(name = "created_at")
     private LocalDateTime createdAt;
@@ -32,6 +34,10 @@ public class FreeBoard {
 
     @Column(name = "freefile_img")
     private String freeFileImg;
+
+    public String getImageName() {
+        return freeFileImg; // single image
+    }
 
     private String freeFileImgs; // 여러 이미지 경로를 저장할 필드
 

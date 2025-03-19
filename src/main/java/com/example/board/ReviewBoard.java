@@ -65,6 +65,7 @@ public class ReviewBoard {
     }
 
     public Long getId() {
+
         return id;
     }
 

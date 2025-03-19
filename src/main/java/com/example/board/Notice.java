@@ -22,6 +22,7 @@ public class Notice {
     private String nickname;
     private String content;
     private String boardType;
+    private String imageName;
 
     @Column(name = "created_at")
     private LocalDateTime createdAt;
@@ -32,6 +33,10 @@ public class Notice {
 
     @Column(name = "noticefile_img")
     private String noticeFileImg;
+
+    public String getImageName() {
+        return noticeFileImg; // single image
+    }
 
     private String noticeFileImgs; // 여러 이미지 경로를 저장할 필드
 

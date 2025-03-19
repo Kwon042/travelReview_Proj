@@ -27,11 +27,6 @@ public class ReviewBoardService {
 
     private static final long MAX_FILE_SIZE = 5 * 1024 * 1024; // 5MB (5 * 1024 * 1024 바이트)
 
-    public List<ReviewBoard> getBoardByRegion(String region) {
-
-        return reviewBoardRepository.findByRegion(region);
-    }
-
     public String saveBoardImage(Long postId, MultipartFile file) throws IOException {
         // 파일 확장자 및 크기 검사
         String originalFilename = file.getOriginalFilename();
@@ -136,4 +131,12 @@ public class ReviewBoardService {
         return reviewBoardRepository.findById(id).orElse(null);
     }
 
+    public List<ReviewBoard> getBoardByRegion(String region) {
+
+        return reviewBoardRepository.findByRegion(region);
+    }
+
+    public List<ReviewBoard> getAllBoards() {
+        return reviewBoardRepository.findAll();
+    }
 }

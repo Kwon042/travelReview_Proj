@@ -48,11 +48,14 @@
         <p class="post-content" th:text="${post.content}"></p>
 
         <div class="post-image">
-          <img th:src="@{/images/${post.imageName}}" alt="게시글 이미지" />
+          <img th:if="${post.imageName != null}"
+               th:src="@{/images/${post.imageName}}"
+               alt="게시글 이미지" />
+          <span th:if="${post.imageName == null}">이미지가 없습니다.</span>
         </div>
       </div>
-
-      <a href="/Boards/{boardType}" class="btn btn-primary back-button">목록으로 돌아가기</a>
+      <a th:href="@{${boardType == 'reviewBoard' ? '/Boards/reviewBoard' + (region != null ? '?region=' + region : '') : '/Boards/' + boardType}}"
+         class="btn btn-primary back-button">목록으로 돌아가기</a>
     </main>
   </div>
 </div>
@@ -61,11 +64,22 @@
 <footer th:replace="~{layout/footer}"></footer>
 
 <script>
-  document.addEventListener("DOMContentLoaded", function() {
-      const urlParams = new URLSearchParams(window.location.search);
-      const region = urlParams.get('region') || "전체"; // 기본값: '전체'
+  document.addEventListener('DOMContentLoaded', function() {
+      const regionTitleElement = document.getElementById('region-title');
+      if (regionTitleElement) {
+          let region = '지역 이름'; 
+          regionTitleElement.textContent = `${region} 지역게시판`;
+      }
 
-      document.getElementById('region-title').textContent = ${region} 게시판;
+      const freeBoardTitleElement = document.getElementById('free-board-title');
+      if (freeBoardTitleElement) {
+          freeBoardTitleElement.textContent = '자유게시판';
+      }
+
+      const noticeTitleElement = document.getElementById('notice-title');
+      if (noticeTitleElement) {
+          noticeTitleElement.textContent = '공지사항';
+      }
   });
 </script>
 

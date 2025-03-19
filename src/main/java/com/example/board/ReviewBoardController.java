@@ -143,10 +143,14 @@ public class ReviewBoardController {
         }
 
         model.addAttribute("boardType", boardType);
+        model.addAttribute("region", region);
         model.addAttribute("post", post);
 
         return "Boards/detail";
     }
+
+
+
 
 
 

@@ -7,6 +7,9 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -15,6 +18,10 @@ import java.util.List;
 public class NoticeService {
 
     private final NoticeRepository noticeRepository;
+
+    private static final long MAX_FILE_SIZE = 5 * 1024 * 1024; // 5MB
+    private final Path noticeImagePath = Paths.get(System.getProperty("user.dir"), "uploads/notice_images");
+
 
     public List<Notice> getAllNotices() {
         return noticeRepository.findAll();
@@ -61,22 +68,30 @@ public class NoticeService {
         }
     }
 
-    private String saveBoardImage(Long postId, MultipartFile image) throws IOException {
-        // 이미지 저장 로직
-        String fileName = postId + "_" + image.getOriginalFilename();
-        String uploadDir = "uploads/notice_images/" + postId; // 게시글 ID별로 이미지 경로 설정
-
-        // 디렉토리 생성
-        File directory = new File(uploadDir);
-        if (!directory.exists()) {
-            directory.mkdirs();
+    private String saveNoticeImage(Long noticeId, MultipartFile image) throws IOException {
+        String originalFilename = image.getOriginalFilename();
+        if (originalFilename == null || originalFilename.isEmpty()) {
+            throw new IllegalArgumentException("파일 이름이 유효하지 않습니다.");
         }
 
-        // 파일 저장
-        File file = new File(directory, fileName);
-        image.transferTo(file);
+        // 파일 크기 체크
+        if (image.getSize() > MAX_FILE_SIZE) {
+            throw new IllegalArgumentException("파일 크기가 너무 큽니다. 최대 " + (MAX_FILE_SIZE / (1024 * 1024)) + "MB 이하로 업로드 해주세요.");
+        }
 
-        return "/uploads/notice_images/" + postId + "/" + fileName;
+        // 공지사항 이미지 업로드 디렉토리 확인 및 생성
+        Path userUploadDir = noticeImagePath.resolve(noticeId.toString());
+        if (!Files.exists(userUploadDir)) {
+            Files.createDirectories(userUploadDir); // 디렉토리 생성
+        }
+
+        String fileName = System.currentTimeMillis() + "_" + originalFilename;
+        Path imageFile = userUploadDir.resolve(fileName);
+
+        // 이미지 파일 저장
+        image.transferTo(imageFile.toFile());
+
+        return "/uploads/notice_images/" + noticeId + "/" + fileName;
     }
 
     public Notice getPostId(Long id) {

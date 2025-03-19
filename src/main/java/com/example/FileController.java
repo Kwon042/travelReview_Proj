@@ -1,5 +1,6 @@
 package com.example;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.UrlResource;
 import org.springframework.http.HttpHeaders;
@@ -16,11 +17,13 @@ import java.nio.file.Paths;
 @RequestMapping("/uploads")
 public class FileController {
 
+    private final String uploadDir = "/uploads/profile_images/"; // 상대 경로
+
     @GetMapping("/{filename:.+}")
     public ResponseEntity<Resource> serveFile(@PathVariable String filename) {
         try {
             // 업로드 디렉토리 경로가 유효해야 함
-            Path file = Paths.get("uploads").resolve(filename).normalize();
+            Path file = Paths.get(uploadDir).resolve(filename).normalize();
             Resource resource = new UrlResource(file.toUri());
 
             // 파일 존재 여부 확인

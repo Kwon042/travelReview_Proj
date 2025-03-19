@@ -38,25 +38,5 @@ public class NoticeController {
         return "Boards/write";
     }
 
-    /*
-    @PostMapping("/notice/save")
-    @PreAuthorize("isAuthenticated()")
-    public String saveNotice(@RequestParam String title,
-                             @RequestParam String content,
-                             @RequestParam(name = "nickname") String nickname,
-                             @RequestParam(name = "image", required = false) List<MultipartFile> images) {
-        noticeService.savePost(title, content, nickname, images);
 
-        return "redirect:/Boards/notice";
-    }
-     */
-
-//    @GetMapping("/notice/detail/{id}")
-//    public String detailPage(@PathVariable Long id, Model model) {
-//        Notice post = noticeService.getPostId(id);
-//
-//        model.addAttribute("post", post);
-//
-//        return "Boards/detail";
-//    }
 }

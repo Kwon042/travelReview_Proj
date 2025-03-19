@@ -74,6 +74,8 @@ public class UserController {
             return "redirect:/user/login";
         }
         SiteUser user = (SiteUser) authentication.getPrincipal();
+        // profileImageUrl 값을 출력
+        System.out.println("Profile Image URL: " + user.getProfileImageUrl());
         model.addAttribute("user", user);
 
         return "user/mypage";

@@ -49,7 +49,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
          const formData = new FormData();
          formData.append('userId', currentUserId); // 'userId' 매개변수 추가
-         formData.append('profileImage', file); // 'profileImage'라는 필드 이름으로 파일 추가
+         formData.append('profileImage', file);
 
          // 서버로 파일 전송
          fetch('/user/uploadProfileImage', {
@@ -69,7 +69,7 @@ document.addEventListener("DOMContentLoaded", function () {
                  // 업로드 성공 시 프로필 이미지 갱신
                  const profileImage = document.querySelector('.profile-image');
                  if (profileImage) {
-                     profileImage.src = data.newProfileImageUrl;
+                     profileImage.src = data.newProfileImageUrl; // 새 URL로 갱신
                  }
                  alert("프로필 이미지가 성공적으로 업로드 되었습니다.");
                  closeProfileImageModal();
