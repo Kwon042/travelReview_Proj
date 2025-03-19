@@ -34,7 +34,6 @@ public class SecurityConfig {
                 )
                 .csrf(csrf -> csrf
                         .ignoringRequestMatchers(new AntPathRequestMatcher("/mysql/**"))
-                        .disable() // ✅ CSRF 비활성화 (정적 리소스 요청 시 필요할 수 있음)
                 )
                 .headers((headers) -> headers
                         .addHeaderWriter(new XFrameOptionsHeaderWriter(

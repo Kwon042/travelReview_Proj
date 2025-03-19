@@ -23,20 +23,34 @@ public class FreeBoardService {
     public List<FreeBoard> getAllPosts() {
         return freeBoardRepository.findAll();
     }
+
     public FreeBoard getPostId(Long id) {
         return freeBoardRepository.findById(id).orElse(null);
     }
 
-
     @Transactional
-    public void savePost(String title, String content, String username, String nickname, String boardType, List<MultipartFile> images) {
-        FreeBoard freeBoard = new FreeBoard();
+    public void savePost(String title, String content, String username, String nickname, String boardType, List<MultipartFile> images, Long postId) {
+        FreeBoard freeBoard;
+
+        if (postId != null) {
+            // 게시글 ID가 존재하면 기존 게시글을 가져옴
+            freeBoard = freeBoardRepository.findById(postId).orElse(null);
+
+            if (freeBoard == null) {
+                throw new IllegalArgumentException("게시글을 찾을 수 없습니다.");
+            }
+        } else {
+            // 게시글이 존재하지 않으면 새로 생성
+            freeBoard = new FreeBoard();
+            freeBoard.setCreatedAt(LocalDateTime.now());
+        }
+
+        // 기존 데이터를 수정
         freeBoard.setTitle(title);
         freeBoard.setContent(content);
         freeBoard.setUsername(username);
         freeBoard.setNickname(nickname);
         freeBoard.setBoardType(boardType);
-        freeBoard.setCreatedAt(LocalDateTime.now());
         freeBoard.setUpdatedAt(LocalDateTime.now());
 
         // 게시글 저장

@@ -55,7 +55,7 @@
         </div>
       </div>
       <div class="action-buttons my-3">
-        <form th:action="@{/Boards/{boardType}/edit/{id}(boardType=${boardType}, id=${post.id})}" method="post" th:if="${post.username != null and post.username == currentUsername}" style="display: inline;">
+        <form th:action="@{/Boards/{boardType}/edit/{id}(boardType=${boardType}, id=${post.id})}" method="get" th:if="${post.username != null and post.username == currentUsername}" style="display: inline;">
           <button type="submit" class="btn btn-secondary">수정</button>
         </form>
         <button onclick="deletePost('[[${boardType}]]', /*[[${post.id}]]*/ 0)" class="btn btn-danger"

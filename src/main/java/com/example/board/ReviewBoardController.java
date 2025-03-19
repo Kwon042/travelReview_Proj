@@ -50,8 +50,21 @@ public class ReviewBoardController {
         return "Boards/reviewBoard";
     }
 
+    @GetMapping("/write")
+    public String write(@RequestParam(value = "region", required = false) String region,
+                        @RequestParam(value = "boardType", required = true) String boardType,
+                        HttpServletRequest request, Model model) {
+        CsrfToken csrfToken = csrfTokenRepository.generateToken(request);
+        model.addAttribute("_csrf", csrfToken);
+        model.addAttribute("boardType", boardType);
 
+        // 전체 게시판인지 확인
+        boolean isAllBoard = "reviewBoard".equals(boardType);
+        model.addAttribute("isAllBoard", isAllBoard);
 
+        model.addAttribute("region", region);
 
+        return "Boards/write";
+    }
 
 }

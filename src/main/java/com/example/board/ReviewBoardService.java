@@ -58,35 +58,50 @@ public class ReviewBoardService {
 
     @Transactional
     public void savePost(String title, String content, String region, String username, String nickname, String boardType, List<MultipartFile> images) {
-
+        // 게시글을 공통 게시판에 저장
         saveToAllBoards(title, content, region, username, nickname, boardType);
+
+        // 지역 게시판에 저장
         saveToRegionalBoard(title, content, region, username, nickname, boardType);
+
         // 지역 게시판의 글을 찾아서 이미지 저장
         Optional<ReviewBoard> regionalPost = reviewBoardRepository.findByRegionAndTitle(region, title);
 
         if (regionalPost.isPresent() && images != null && !images.isEmpty()) {
-            ReviewBoard post = regionalPost.get();
-            // 이미지 경로를 저장할 StringBuilder 생성
-            StringBuilder imagePaths = new StringBuilder();
+            ReviewBoard post = regionalPost.get();  // 게시글 가져오기
 
-            for (MultipartFile image : images) {
-                if (!image.isEmpty() && post.getId() != null) {
-                    try {
-                        String imagePath = saveBoardImage(post.getId(), image);  // 게시글 이미지를 저장하고 경로 반환
-                        if (imagePaths.length() > 0) {
-                            imagePaths.append(";");  // 경로들을 세미콜론으로 구분
+            // 기존 게시글을 수정하기 위해 `id`가 null이 아닌지 확인
+            if (post.getId() != null) {
+                // 이미지 경로를 저장할 StringBuilder 생성
+                StringBuilder imagePaths = new StringBuilder();
+
+                // 이미지 처리
+                for (MultipartFile image : images) {
+                    if (!image.isEmpty()) {
+                        try {
+                            String imagePath = saveBoardImage(post.getId(), image);  // 게시글 이미지를 저장하고 경로 반환
+                            if (imagePaths.length() > 0) {
+                                imagePaths.append(";");  // 경로들을 세미콜론으로 구분
+                            }
+                            imagePaths.append(imagePath);  // 이미지 경로를 추가
+                        } catch (IOException e) {
+                            e.printStackTrace();  // 예외 발생 시 처리
                         }
-                        imagePaths.append(imagePath);  // 이미지 경로를 추가
-                    } catch (IOException e) {
-                        e.printStackTrace();  // 예외 발생 시 처리
                     }
                 }
+
+                // 여러 이미지 경로를 하나의 String으로 결합하여 ReviewBoard 객체에 설정
+                if (imagePaths.length() > 0) {
+                    post.setReviewFileImgs(imagePaths.toString());  // 이미지 경로 설정
+                    reviewBoardRepository.save(post);  // 기존 게시글을 수정
+                }
+            } else {
+                // `id`가 없으면, 기존 게시글이 아니므로, 예외 처리
+                throw new IllegalArgumentException("No existing post found to update.");
             }
-            // 여러 이미지 경로를 하나의 String으로 결합하여 ReviewBoard 객체에 설정
-            post.setReviewFileImgs(imagePaths.toString());
-            reviewBoardRepository.save(post);
         }
     }
+
 
     void saveToAllBoards(String title, String content, String region, String username, String nickname, String boardType) {
         // "전체" 게시판에 동일한 제목과 내용의 글이 있는지 확인

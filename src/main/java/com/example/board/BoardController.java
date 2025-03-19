@@ -11,6 +11,7 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.web.csrf.CsrfToken;
 import org.springframework.security.web.csrf.CsrfTokenRepository;
 import org.springframework.stereotype.Controller;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -27,26 +28,12 @@ public class BoardController {
     private final ReviewBoardService reviewBoardService;
     private final FreeBoardService freeBoardService;
     private final NoticeService noticeService;
+    private final ReviewBoardRepository reviewBoardRepository;
+    private final FreeBoardRepository freeBoardRepository;
+    private final NoticeRepository noticeRepository;
 
     @Autowired
     private CsrfTokenRepository csrfTokenRepository;
-
-    @GetMapping("/write")
-    public String write(@RequestParam(value = "region", required = false) String region,
-                        @RequestParam(value = "boardType", required = true) String boardType,
-                        HttpServletRequest request, Model model) {
-        CsrfToken csrfToken = csrfTokenRepository.generateToken(request);
-        model.addAttribute("_csrf", csrfToken);
-        model.addAttribute("boardType", boardType);
-
-        // 전체 게시판인지 확인
-        boolean isAllBoard = "reviewBoard".equals(boardType);
-        model.addAttribute("isAllBoard", isAllBoard);
-
-        model.addAttribute("region", region);
-
-        return "Boards/write";
-    }
 
     // 글 저장하기
     @PostMapping("/save")
@@ -62,14 +49,13 @@ public class BoardController {
 
         switch (boardType) {
             case "reviewBoard":
-                // 지역이 필요한 경우
                 reviewBoardService.savePost(title, content, region, username, nickname, boardType, images);
                 break;
             case "freeBoard":
-                freeBoardService.savePost(title, content, username, nickname, boardType, images);
+                freeBoardService.savePost(title, content, username, nickname, boardType, images, currentUser.getId());
                 break;
             case "notice":
-                noticeService.savePost(title, content, username, nickname, boardType, images);
+                noticeService.savePost(title, content, username, nickname, boardType, images, currentUser.getId());
                 break;
             default:
                 throw new IllegalArgumentException("Invalid board type: " + boardType);
@@ -133,64 +119,107 @@ public class BoardController {
 
         model.addAttribute("currentUsername", currentUser.getUsername());
 
-        // 로그 추가
-        System.out.println("Current User Username: " + currentUser.getUsername());
-        System.out.println("Post Author Username: " + (post instanceof ReviewBoard ? ((ReviewBoard) post).getUsername() : (post instanceof FreeBoard ? ((FreeBoard) post).getUsername() : ((Notice) post).getUsername())));
-
-
         return "Boards/detail";
     }
 
+    // 게시글 수정
+    @Transactional
     @PostMapping("/{boardType}/edit/{id}")
     @PreAuthorize("isAuthenticated()")
     public ResponseEntity<?> editPost(@PathVariable String boardType,
                                       @PathVariable Long id,
-                                      @RequestParam String title,
-                                      @RequestParam String content,
+                                      @RequestParam(required = false) String title,
+                                      @RequestParam(required = false) String content,
                                       @AuthenticationPrincipal SiteUser currentUser, Model model) {
+        // 게시글을 가져옵니다.
         Object post = getPostById(boardType, id);
+
+        // 게시글이 없는 경우
+        if (post == null) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Post not found.");
+        }
+
         model.addAttribute("post", post);
         model.addAttribute("boardType", boardType);
 
         String postUsername = getPostUsername(post);
         String nickname = currentUser.getNickname();
 
-        if (postUsername.equals(currentUser.getUsername())) {
-            updatePost(post, title, content, ((ReviewBoard) post).getRegion(), currentUser.getUsername(), nickname, boardType, null);
-            return ResponseEntity.ok().body(boardType + " post updated successfully");
+        // 로그인한 사용자가 작성자인지 확인
+        if (!postUsername.equals(currentUser.getUsername())) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).body("You are not authorized to edit this post.");
         }
 
-        return ResponseEntity.status(HttpStatus.FORBIDDEN).body("You are not authorized to edit this post.");
-    }
-
-    private void updatePost(Object post, String title, String content, String region, String username, String nickname, String boardType, List<MultipartFile> images) {
+        // 게시글 타입별로 수정 처리
         if (post instanceof ReviewBoard) {
             ReviewBoard reviewPost = (ReviewBoard) post;
-            reviewPost.setTitle(title);
-            reviewPost.setContent(content);
-            reviewPost.setRegion(region);
-            reviewPost.setUsername(username);
-            reviewPost.setNickname(nickname);
-            reviewBoardService.savePost(title, content, region, username, nickname, boardType, images);
+            // 기존 데이터를 수정
+            if (title != null) reviewPost.setTitle(title);
+            if (content != null) reviewPost.setContent(content);
+            reviewBoardRepository.save(reviewPost);
         } else if (post instanceof FreeBoard) {
             FreeBoard freePost = (FreeBoard) post;
-            freePost.setTitle(title);
-            freePost.setContent(content);
-            freePost.setUsername(username);
+            freePost.setId(id);
+            if (title != null) freePost.setTitle(title);
+            if (content != null) freePost.setContent(content);
+
+            freePost.setUsername(currentUser.getUsername());
             freePost.setNickname(nickname);
-            freeBoardService.savePost(title, content, username, nickname, boardType, images);
+            freeBoardRepository.save(freePost);
         } else if (post instanceof Notice) {
             Notice noticePost = (Notice) post;
-            noticePost.setTitle(title);
-            noticePost.setContent(content);
-            noticePost.setUsername(username);
+            noticePost.setId(id);
+            if (title != null) noticePost.setTitle(title);
+            if (content != null) noticePost.setContent(content);
+
+            noticePost.setUsername(currentUser.getUsername());
             noticePost.setNickname(nickname);
-            noticeService.savePost(title, content, username, nickname, boardType, images);
+            noticeRepository.save(noticePost);
         } else {
-            throw new IllegalArgumentException("Invalid post type: " + post.getClass().getName());
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Invalid board type.");
         }
+
+        return ResponseEntity.ok().body(boardType + " post updated successfully");
     }
 
+    @GetMapping("/{boardType}/edit/{id}")
+    @PreAuthorize("isAuthenticated()")
+    public String showEditForm(@PathVariable String boardType,
+                               @PathVariable Long id,
+                               @AuthenticationPrincipal SiteUser currentUser, Model model) {
+        // 게시글을 조회
+        Object post = getPostById(boardType, id);
+
+        if (post == null) {
+            return "error/404";
+        }
+
+        String postUsername = getPostUsername(post);
+
+        // 수정하려는 사용자가 게시글 작성자인지 확인
+        if (!postUsername.equals(currentUser.getUsername())) {
+            return "error/forbidden";
+        }
+
+        // 해당 게시판 타입에 맞는 데이터 전달
+        if ("reviewBoard".equals(boardType)) {
+            ReviewBoard reviewBoard = (ReviewBoard) post;
+            model.addAttribute("post", reviewBoard);
+            model.addAttribute("region", reviewBoard.getRegion());
+        } else if ("freeBoard".equals(boardType)) {
+            FreeBoard freeBoard = (FreeBoard) post;
+            model.addAttribute("post", freeBoard);
+        } else if ("notice".equals(boardType)) {
+            Notice notice = (Notice) post;
+            model.addAttribute("post", notice);
+        }
+
+        model.addAttribute("boardType", boardType);
+
+        return "Boards/write";
+    }
+
+    // 게시글 삭제
     @DeleteMapping("/{boardType}/delete/{id}")
     @PreAuthorize("isAuthenticated()")
     public ResponseEntity<?> deletePost(@PathVariable String boardType,

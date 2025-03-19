@@ -22,23 +22,36 @@ public class NoticeService {
     private static final long MAX_FILE_SIZE = 5 * 1024 * 1024; // 5MB
     private final Path noticeImagePath = Paths.get(System.getProperty("user.dir"), "uploads/notice_images");
 
-
     public List<Notice> getAllNotices() {
         return noticeRepository.findAll();
     }
 
     @Transactional
-    public void savePost(String title, String content, String username, String nickname, String boardType, List<MultipartFile> images) {
+    public void savePost(String title, String content, String username, String nickname, String boardType, List<MultipartFile> images, Long postId) {
+        Notice notice;
 
-        Notice notice = new Notice();
+        if (postId != null) {
+            // 게시글 ID가 존재하면 기존 게시글을 가져옴
+            notice = noticeRepository.findById(postId).orElse(null);
+
+            if (notice == null) {
+                throw new IllegalArgumentException("게시글을 찾을 수 없습니다.");
+            }
+        } else {
+            // 게시글이 존재하지 않으면 새로 생성
+            notice = new Notice();
+            notice.setCreatedAt(LocalDateTime.now());
+        }
+
+        // 기존 데이터를 수정
         notice.setTitle(title);
         notice.setContent(content);
         notice.setUsername(username);
         notice.setNickname(nickname);
         notice.setBoardType(boardType);
-        notice.setCreatedAt(LocalDateTime.now());
         notice.setUpdatedAt(LocalDateTime.now());
 
+        // 게시글 저장
         noticeRepository.save(notice);
 
         // 이미지가 있을 경우 처리
